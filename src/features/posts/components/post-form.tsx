@@ -12,12 +12,14 @@ interface PostFormProps {
   showCard?: boolean;
   placeholder?: string;
   className?: string;
+  forumId?: string;
 }
 
 export function PostForm({
   showCard = true,
   placeholder = "What's on your mind?",
   className = "",
+  forumId,
 }: PostFormProps) {
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -34,7 +36,7 @@ export function PostForm({
 
     startTransition(async () => {
       try {
-        await createPost(content);
+        await createPost(content, forumId);
         setContent("");
         toast.success("Post created successfully!");
       } catch {

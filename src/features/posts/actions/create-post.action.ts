@@ -30,7 +30,7 @@ async function getAnonymousUser() {
   return anonymousUser;
 }
 
-export async function createPost(content: string) {
+export async function createPost(content: string, forumId?: string) {
   const headersList = await headers();
 
   const session = await auth.api.getSession({
@@ -52,8 +52,12 @@ export async function createPost(content: string) {
     data: {
       content: content.trim(),
       userId: userId,
+      forumId: forumId || null,
     },
   });
 
   revalidatePath("/");
+  if (forumId) {
+    revalidatePath(`/forums/${forumId}`);
+  }
 }

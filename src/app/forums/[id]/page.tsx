@@ -3,6 +3,8 @@ import { getForumById } from "@/features/forums/queries/get-forums.action";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star, MessageCircle, Users } from "lucide-react";
+import { PostForm } from "@/features/posts/components/post-form";
+import { ForumPostsList } from "@/features/posts/components/forum-posts-list";
 
 interface ForumPageProps {
   params: {
@@ -42,19 +44,19 @@ export default async function ForumPage({ params }: ForumPageProps) {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="bg-muted/30 rounded-lg p-6 text-center">
-              <div className="flex items-center justify-center mb-4">
-                <Users className="h-8 w-8 text-muted-foreground" />
-              </div>
-              <h3 className="text-lg font-semibold mb-2">Bienvenue dans le forum {forum.name}</h3>
-              <p className="text-muted-foreground">
-                Cette page affiche les détails du forum. Vous pouvez ici ajouter la liste des posts,
-                les fonctionnalités de création de nouveaux posts, et la pagination.
-              </p>
-            </div>
-          </CardContent>
         </Card>
+
+        <div className="mt-8 space-y-8">
+          <PostForm 
+            forumId={forum.id}
+            placeholder={`Que voulez-vous partager dans ${forum.name} ?`}
+          />
+          
+          <ForumPostsList 
+            forumId={forum.id} 
+            forumName={forum.name}
+          />
+        </div>
       </div>
     );
   } catch (error) {

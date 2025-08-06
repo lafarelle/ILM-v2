@@ -34,3 +34,29 @@ export async function getPosts(): Promise<SimplePost[]> {
     throw new Error("Failed to fetch posts");
   }
 }
+
+export async function getPostsByForum(forumId: string): Promise<SimplePost[]> {
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        forumId: forumId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return posts;
+  } catch (error) {
+    console.error("Error fetching forum posts:", error);
+    throw new Error("Failed to fetch forum posts");
+  }
+}
