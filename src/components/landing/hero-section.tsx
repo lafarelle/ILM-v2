@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSession } from "@/lib/auth/auth-client";
+import { PostForm } from "@/features/posts/components/post-form";
 
 export function HeroSection() {
   const { data: session } = useSession();
@@ -57,7 +58,15 @@ export function HeroSection() {
             échangez avec d&apos;autres habitants et célébrez ensemble notre belle ville.
           </p>
           
-          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="mt-12 max-w-2xl mx-auto">
+            <PostForm 
+              showCard={false} 
+              placeholder="Partagez votre amour pour Meudon..."
+              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50"
+            />
+          </div>
+          
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             {session?.user.role === 'ADMIN' && (
               <Button size="lg" asChild className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 px-8 py-6 text-lg">
                 <Link href="/admin">
@@ -65,16 +74,20 @@ export function HeroSection() {
                 </Link>
               </Button>
             )}
-            <Button size="lg" asChild className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white border-0 px-8 py-6 text-lg">
-              <Link href="/auth/register">
-                Rejoindre la communauté
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" asChild className="w-full sm:w-auto border-2 px-8 py-6 text-lg">
-              <Link href="/auth/login">
-                Se connecter
-              </Link>
-            </Button>
+            {!session && (
+              <>
+                <Button size="lg" asChild className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white border-0 px-8 py-6 text-lg">
+                  <Link href="/auth/register">
+                    Rejoindre la communauté
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild className="w-full sm:w-auto border-2 px-8 py-6 text-lg">
+                  <Link href="/auth/login">
+                    Se connecter
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
           
           <div className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-500 dark:text-gray-400">
