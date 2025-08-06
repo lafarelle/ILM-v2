@@ -43,6 +43,7 @@ export function HeroSection() {
             {session.user.role === "ADMIN" && (
               <Button
                 asChild
+                variant="default"
                 size="sm"
                 className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
               >
