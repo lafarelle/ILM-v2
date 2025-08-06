@@ -1,7 +1,11 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useSession } from "@/lib/auth/auth-client";
 
 export function HeroSection() {
+  const { data: session } = useSession();
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
       <div className="absolute inset-0 opacity-40">
@@ -54,6 +58,13 @@ export function HeroSection() {
           </p>
           
           <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+            {session?.user.role === 'ADMIN' && (
+              <Button size="lg" asChild className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white border-0 px-8 py-6 text-lg">
+                <Link href="/admin">
+                  Tableau de bord Admin
+                </Link>
+              </Button>
+            )}
             <Button size="lg" asChild className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white border-0 px-8 py-6 text-lg">
               <Link href="/auth/register">
                 Rejoindre la communauté

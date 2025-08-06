@@ -4,6 +4,9 @@ import {
 } from "@/components/auth-management/delete-user-button";
 import { ReturnButton } from "@/components/buttons/return-button";
 import { UserRoleSelect } from "@/components/user-role/user-role-select";
+import { CreateForumForm } from "@/features/forums/components/create-forum-form";
+import { ForumsList } from "@/features/forums/components/forums-list";
+import { getForums } from "@/features/forums/queries/get-forums.action";
 import type { UserRole } from "@/generated/prisma";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
@@ -47,6 +50,8 @@ export default async function Page() {
     return 0;
   });
 
+  const forums = await getForums();
+
   return (
     <div className="px-8 py-16 container mx-auto max-w-screen-lg space-y-8">
       <div className="space-y-4">
@@ -59,41 +64,56 @@ export default async function Page() {
         </p>
       </div>
 
-      <div className="w-full overflow-x-auto">
-        <table className="table-auto min-w-full whitespace-nowrap">
-          <thead>
-            <tr className="border-b text-sm text-left">
-              <th className="px-4 py-2">ID</th>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Email</th>
-              <th className="px-4 py-2 text-center">Role</th>
-              <th className="px-4 py-2 text-center">Actions</th>
-            </tr>
-          </thead>
+      <div className="space-y-8">
+        {/* Forums Management Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold">Gestion des Forums</h2>
+            <CreateForumForm />
+          </div>
+          <ForumsList forums={forums} />
+        </div>
 
-          <tbody>
-            {sortedUsers.map((user) => (
-              <tr key={user.id} className="border-b text-sm text-left">
-                <td className="px-4 py-2">{user.id.slice(0, 8)}</td>
-                <td className="px-4 py-2">{user.name}</td>
-                <td className="px-4 py-2">{user.email}</td>
-                <td className="px-4 py-2 text-center">
-                  <UserRoleSelect
-                    userId={user.id}
-                    role={user.role as UserRole}
-                  />
-                </td>
-                <td className="px-4 py-2 text-center">
-                  {user.role === "USER" ? (
-                    <DeleteUserButton userId={user.id} />
-                  ) : (
-                    <PlaceholderDeleteUserButton />
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Users Management Section */}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-semibold">Gestion des Utilisateurs</h2>
+          <div className="w-full overflow-x-auto">
+            <table className="table-auto min-w-full whitespace-nowrap">
+              <thead>
+                <tr className="border-b text-sm text-left">
+                  <th className="px-4 py-2">ID</th>
+                  <th className="px-4 py-2">Name</th>
+                  <th className="px-4 py-2">Email</th>
+                  <th className="px-4 py-2 text-center">Role</th>
+                  <th className="px-4 py-2 text-center">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {sortedUsers.map((user) => (
+                  <tr key={user.id} className="border-b text-sm text-left">
+                    <td className="px-4 py-2">{user.id.slice(0, 8)}</td>
+                    <td className="px-4 py-2">{user.name}</td>
+                    <td className="px-4 py-2">{user.email}</td>
+                    <td className="px-4 py-2 text-center">
+                      <UserRoleSelect
+                        userId={user.id}
+                        role={user.role as UserRole}
+                      />
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      {user.role === "USER" ? (
+                        <DeleteUserButton userId={user.id} />
+                      ) : (
+                        <PlaceholderDeleteUserButton />
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
