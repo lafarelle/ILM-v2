@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { createPost } from "@/features/posts/actions/create-post.action";
-import { useSession } from "@/lib/auth/auth-client";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -23,16 +22,10 @@ export function PostForm({
 }: PostFormProps) {
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
-  const { data: session } = useSession();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
-
-    if (!session) {
-      toast.error("You need to be logged in to create a post");
-      return;
-    }
 
     startTransition(async () => {
       try {
