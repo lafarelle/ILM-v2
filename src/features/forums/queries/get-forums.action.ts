@@ -1,24 +1,32 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
-export async function getForums() {
-  const forums = await prisma.forum.findMany({
-    orderBy: [
-      { isDefault: 'desc' }, // Default forums first
-      { name: 'asc' }, // Then alphabetically
-    ],
-    include: {
-      _count: {
-        select: {
-          posts: true,
+export const getForums = unstable_cache(
+  async () => {
+    const forums = await prisma.forum.findMany({
+      orderBy: [
+        { isDefault: 'desc' }, // Default forums first
+        { name: 'asc' }, // Then alphabetically
+      ],
+      include: {
+        _count: {
+          select: {
+            posts: true,
+          },
         },
       },
-    },
-  });
+    });
 
-  return forums;
-}
+    return forums;
+  },
+  ['forums'],
+  {
+    tags: ['forums'],
+    revalidate: 300 // 5 minutes
+  }
+);
 
 export async function getForumById(id: string) {
   if (!id) {

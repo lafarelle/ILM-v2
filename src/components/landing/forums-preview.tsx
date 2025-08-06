@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import { MessageCircle } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface Forum {
   id: string;
@@ -14,45 +11,11 @@ interface Forum {
   };
 }
 
-export function ForumsPreview() {
-  const [forums, setForums] = useState<Forum[]>([]);
-  const [loading, setLoading] = useState(true);
+interface ForumsPreviewProps {
+  forums: Forum[];
+}
 
-  useEffect(() => {
-    async function fetchForums() {
-      try {
-        const response = await fetch('/api/forums');
-        const data = await response.json();
-        setForums(data);
-      } catch (error) {
-        console.error('Failed to fetch forums:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchForums();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="mt-16">
-        <h3 className="text-xl font-semibold text-center mb-6 text-foreground">
-          Découvrez nos forums
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="p-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-lg border border-gray-200/50 dark:border-gray-700/50 animate-pulse">
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded mb-1"></div>
-              <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
+export function ForumsPreview({ forums }: ForumsPreviewProps) {
   if (forums.length === 0) {
     return null;
   }

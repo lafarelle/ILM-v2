@@ -7,7 +7,7 @@ import {
 import { auth } from "@/lib/auth/auth";
 import { canUserManageAllContent } from "@/lib/permissions";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { headers } from "next/headers";
 
 export async function createForum(input: CreateForumInput) {
@@ -58,6 +58,9 @@ export async function createForum(input: CreateForumInput) {
 
   revalidatePath("/admin");
   revalidatePath("/admin/dashboard");
+  revalidatePath("/");
+  revalidatePath("/forums");
+  revalidateTag("forums");
 
   return forum;
 }

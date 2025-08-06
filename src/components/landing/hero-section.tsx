@@ -6,7 +6,21 @@ import { useSession } from "@/lib/auth/auth-client";
 import { ForumsPreview } from "./forums-preview";
 import Link from "next/link";
 
-export function HeroSection() {
+interface Forum {
+  id: string;
+  name: string;
+  description: string | null;
+  isDefault: boolean;
+  _count: {
+    posts: number;
+  };
+}
+
+interface HeroSectionProps {
+  forums: Forum[];
+}
+
+export function HeroSection({ forums }: HeroSectionProps) {
   const { data: session } = useSession();
   
   return (
@@ -105,7 +119,7 @@ export function HeroSection() {
             />
           </div>
           
-          <ForumsPreview />
+          <ForumsPreview forums={forums} />
         </div>
       </div>
 
