@@ -7,6 +7,7 @@ import Link from "next/link";
 
 export function HeroSection() {
   const { data: session } = useSession();
+  
   return (
     <section className="relative overflow-hidden bg-background dark:bg-background">
       <div className="absolute inset-0 opacity-40">
@@ -19,6 +20,18 @@ export function HeroSection() {
           }}
         />
       </div>
+
+      {!session && (
+        <div className="absolute top-4 right-4 z-10">
+          <Button
+            asChild
+            variant="outline"
+            className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+          >
+            <Link href="/auth/login">Se connecter</Link>
+          </Button>
+        </div>
+      )}
 
       <div className="relative container mx-auto max-w-7xl px-4 py-24 sm:py-32 lg:py-40">
         <div className="text-center">
@@ -53,43 +66,21 @@ export function HeroSection() {
               adorateurs de Meudon
             </span>
           </h1>
+          
           <div className="mt-12 max-w-2xl mx-auto">
+            {!session && (
+              <p className="text-sm text-muted-foreground mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                Votre post sera publié de façon anonyme. 
+                <Link href="/auth/login" className="ml-1 underline font-medium">
+                  Connectez-vous
+                </Link> pour publier avec votre profil.
+              </p>
+            )}
             <PostForm
               showCard={false}
               placeholder="Partagez votre amour pour Meudon..."
               className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50"
             />
-          </div>
-
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            {session?.user.role === "ADMIN" && (
-              <Button
-                size="lg"
-                asChild
-                className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white border-0 px-8 py-6 text-lg"
-              >
-                <Link href="/admin">Tableau de bord Admin</Link>
-              </Button>
-            )}
-            {!session && (
-              <>
-                <Button
-                  size="lg"
-                  asChild
-                  className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white border-0 px-8 py-6 text-lg"
-                >
-                  <Link href="/auth/register">Rejoindre la communauté</Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  asChild
-                  className="w-full sm:w-auto border-2 px-8 py-6 text-lg"
-                >
-                  <Link href="/auth/login">Se connecter</Link>
-                </Button>
-              </>
-            )}
           </div>
         </div>
       </div>
