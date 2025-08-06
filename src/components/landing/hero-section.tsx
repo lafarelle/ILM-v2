@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { PostForm } from "@/features/posts/components/post-form";
 import { useSession } from "@/lib/auth/auth-client";
+import { ForumsPreview } from "./forums-preview";
 import Link from "next/link";
 
 export function HeroSection() {
@@ -103,6 +104,8 @@ export function HeroSection() {
               className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50"
             />
           </div>
+          
+          <ForumsPreview />
         </div>
       </div>
 

@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { deleteForum } from "@/features/forums/actions/delete-forum.action";
 import { updateForum } from "@/features/forums/actions/update-forum.action";
-import { Star, Trash2 } from "lucide-react";
+import { Star, Trash2, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 interface Forum {
   id: string;
@@ -80,7 +81,9 @@ export function ForumsList({ forums }: ForumsListProps) {
         >
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="font-medium">{forum.name}</h3>
+              <Link href={`/forums/${forum.id}`} className="hover:underline">
+                <h3 className="font-medium">{forum.name}</h3>
+              </Link>
               {forum.isDefault ? (
                 <Badge variant="default">
                   <Star className="mr-1 h-3 w-3" />
@@ -98,6 +101,12 @@ export function ForumsList({ forums }: ForumsListProps) {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Link href={`/forums/${forum.id}`}>
+              <Button size="sm" variant="outline">
+                <MessageCircle className="mr-1 h-4 w-4" />
+                Voir le forum
+              </Button>
+            </Link>
             {!forum.isDefault && (
               <Button
                 size="sm"
