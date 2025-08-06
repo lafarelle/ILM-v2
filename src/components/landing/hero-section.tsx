@@ -21,8 +21,8 @@ export function HeroSection() {
         />
       </div>
 
-      {!session && (
-        <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 left-4 z-10">
+        {!session ? (
           <Button
             asChild
             variant="outline"
@@ -30,8 +30,28 @@ export function HeroSection() {
           >
             <Link href="/auth/login">Se connecter</Link>
           </Button>
-        </div>
-      )}
+        ) : (
+          <div className="flex items-center gap-2">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+            >
+              <Link href="/profile">Profile</Link>
+            </Button>
+            {session.user.role === "ADMIN" && (
+              <Button
+                asChild
+                size="sm"
+                className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+              >
+                <Link href="/admin/dashboard">Admin Dashboard</Link>
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="relative container mx-auto max-w-7xl px-4 py-24 sm:py-32 lg:py-40">
         <div className="text-center">

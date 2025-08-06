@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { createPost } from "@/features/posts/actions/create-post.action";
 import { useSession } from "@/lib/auth/auth-client";
-import Link from "next/link";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -15,10 +14,10 @@ interface PostFormProps {
   className?: string;
 }
 
-export function PostForm({ 
-  showCard = true, 
+export function PostForm({
+  showCard = true,
   placeholder = "What's on your mind?",
-  className = ""
+  className = "",
 }: PostFormProps) {
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -27,7 +26,7 @@ export function PostForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
-    
+
     if (!session) {
       toast.error("You need to be logged in to create a post");
       return;
@@ -54,26 +53,9 @@ export function PostForm({
         required
         disabled={isPending}
       />
-      <div className="flex items-center justify-between">
-        {!session ? (
-          <div className="flex gap-2">
-            <Button asChild variant="default">
-              <Link href="/auth/login">Login to Post</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/auth/register">Sign Up</Link>
-            </Button>
-          </div>
-        ) : (
-          <Button 
-            type="submit" 
-            disabled={isPending || !content.trim()}
-            className="ml-auto"
-          >
-            {isPending ? "Posting..." : "Post"}
-          </Button>
-        )}
-      </div>
+      <Button type="submit" disabled={isPending || !content.trim()}>
+        {isPending ? "Publier..." : "Publier"}
+      </Button>
     </form>
   );
 
@@ -86,9 +68,7 @@ export function PostForm({
       <CardHeader>
         <CardTitle>Create a Post</CardTitle>
       </CardHeader>
-      <CardContent>
-        {formContent}
-      </CardContent>
+      <CardContent>{formContent}</CardContent>
     </Card>
   );
 }
