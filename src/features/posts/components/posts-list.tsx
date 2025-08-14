@@ -1,32 +1,11 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getPosts, type SimplePost } from "@/features/posts/queries/get-posts.action";
 import { PostReport } from "./post-report";
-import { useEffect, useState } from "react";
+import { usePostsContext } from "@/features/posts/context/posts-context";
 
 export function PostsList() {
-  const [posts, setPosts] = useState<SimplePost[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const fetchedPosts = await getPosts();
-        setPosts(fetchedPosts);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
-
-  const handlePostDeleted = (postId: string) => {
-    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-  };
+  const { posts, loading, handlePostDeleted } = usePostsContext();
 
   if (loading) {
     return (

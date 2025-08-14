@@ -1,37 +1,15 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getPostsByForum, type SimplePost } from "@/features/posts/queries/get-posts.action";
 import { PostReport } from "./post-report";
-import { useEffect, useState } from "react";
+import { useForumPostsContext } from "@/features/posts/context/forum-posts-context";
 
 interface ForumPostsListProps {
-  forumId: string;
   forumName: string;
 }
 
-export function ForumPostsList({ forumId, forumName }: ForumPostsListProps) {
-  const [posts, setPosts] = useState<SimplePost[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const fetchedPosts = await getPostsByForum(forumId);
-        setPosts(fetchedPosts);
-      } catch (error) {
-        console.error("Error fetching forum posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, [forumId]);
-
-  const handlePostDeleted = (postId: string) => {
-    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
-  };
+export function ForumPostsList({ forumName }: ForumPostsListProps) {
+  const { posts, loading, handlePostDeleted } = useForumPostsContext();
 
   if (loading) {
     return (

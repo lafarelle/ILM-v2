@@ -9,6 +9,9 @@ import { createPost } from "@/features/posts/actions/create-post.action";
 import { useSession } from "@/lib/auth/auth-client";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { PostsContext } from "@/features/posts/context/posts-context";
+import { ForumPostsContext } from "@/features/posts/context/forum-posts-context";
+import { useContext } from "react";
 
 interface PostFormProps {
   showCard?: boolean;
@@ -27,6 +30,11 @@ export function PostForm({
   const [isPending, startTransition] = useTransition();
   const [isAnonymous, setIsAnonymous] = useState(false);
   const { data: session } = useSession();
+  const postsContext = useContext(PostsContext);
+  const forumPostsContext = useContext(ForumPostsContext);
+  
+  // Use forum context if available (forum page), otherwise use general posts context
+  const refreshPosts = forumPostsContext?.refreshPosts || postsContext?.refreshPosts;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +44,7 @@ export function PostForm({
       try {
         await createPost(content, forumId, isAnonymous);
         setContent("");
+        refreshPosts?.();
         toast.success("Post created successfully!");
       } catch {
         toast.error("Failed to create post");

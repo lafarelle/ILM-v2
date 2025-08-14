@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import { getForumById } from "@/features/forums/queries/get-forums.action";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, MessageCircle, Users } from "lucide-react";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Star, MessageCircle } from "lucide-react";
 import { PostForm } from "@/features/posts/components/post-form";
 import { ForumPostsList } from "@/features/posts/components/forum-posts-list";
+import { ForumPostsProvider } from "@/features/posts/context/forum-posts-context";
 
 interface ForumPageProps {
   params: {
@@ -46,20 +47,21 @@ export default async function ForumPage({ params }: ForumPageProps) {
           </CardHeader>
         </Card>
 
-        <div className="mt-8 space-y-8">
-          <PostForm 
-            forumId={forum.id}
-            placeholder={`Que voulez-vous partager dans ${forum.name} ?`}
-          />
-          
-          <ForumPostsList 
-            forumId={forum.id} 
-            forumName={forum.name}
-          />
-        </div>
+        <ForumPostsProvider forumId={forum.id}>
+          <div className="mt-8 space-y-8">
+            <PostForm 
+              forumId={forum.id}
+              placeholder={`Que voulez-vous partager dans ${forum.name} ?`}
+            />
+            
+            <ForumPostsList 
+              forumName={forum.name}
+            />
+          </div>
+        </ForumPostsProvider>
       </div>
     );
-  } catch (error) {
+  } catch {
     notFound();
   }
 }
@@ -73,7 +75,7 @@ export async function generateMetadata({ params }: ForumPageProps) {
       title: `${forum.name} - Forum`,
       description: forum.description || `Discussions et posts du forum ${forum.name}`,
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Forum non trouvé",
       description: "Ce forum n'existe pas ou a été supprimé",
