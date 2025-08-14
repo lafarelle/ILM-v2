@@ -29,9 +29,46 @@ export default async function Page() {
 
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
 
-          <p className="p-2 rounded-md text-lg bg-red-600 text-white font-bold">
-            FORBIDDEN
-          </p>
+          <div className="space-y-4">
+            <p className="p-2 rounded-md text-lg bg-red-600 text-white font-bold">
+              ACCESS FORBIDDEN
+            </p>
+
+            <div className="p-4 rounded-md bg-yellow-100 dark:bg-yellow-900 border border-yellow-300 dark:border-yellow-700">
+              <h2 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
+                Debug Information:
+              </h2>
+              <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
+                <p>
+                  <strong>User ID:</strong> {session.user.id}
+                </p>
+                <p>
+                  <strong>User Email:</strong> {session.user.email}
+                </p>
+                <p>
+                  <strong>Current Role:</strong>{" "}
+                  {session.user.role || "undefined"}
+                </p>
+                <p>
+                  <strong>Expected Role:</strong> ADMIN
+                </p>
+                <p>
+                  <strong>Session Valid:</strong> {session ? "Yes" : "No"}
+                </p>
+              </div>
+              <div className="mt-3 text-xs text-yellow-600 dark:text-yellow-400">
+                <p>If your account should have admin access, check:</p>
+                <ul className="list-disc list-inside ml-2 mt-1">
+                  <li>
+                    Your email is listed in the ADMIN_EMAILS environment
+                    variable
+                  </li>
+                  <li>The database user record has role=ADMIN</li>
+                  <li>Try logging out and back in to refresh your session</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
