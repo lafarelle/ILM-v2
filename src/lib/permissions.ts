@@ -45,3 +45,22 @@ export function canUserManageOwnContent(isOwner: boolean, userRole?: string) {
 export function canUserManageAllContent(userRole?: string) {
   return userRole === "ADMIN";
 }
+
+export function canUserDeleteComment(commentUserId: string | null, postUserId: string, currentUserId?: string, userRole?: string) {
+  // Admins can delete any comment
+  if (userRole === "ADMIN") {
+    return true;
+  }
+  
+  // Comment author can delete their own comment
+  if (commentUserId && currentUserId && commentUserId === currentUserId) {
+    return true;
+  }
+  
+  // Post author can delete comments on their post
+  if (currentUserId && postUserId === currentUserId) {
+    return true;
+  }
+  
+  return false;
+}

@@ -10,6 +10,12 @@ export type SimplePost = {
     id: string;
     name: string;
   };
+  likes: {
+    userId: string;
+  }[];
+  _count: {
+    comments: number;
+  };
 };
 
 export async function getPosts(): Promise<SimplePost[]> {
@@ -23,6 +29,16 @@ export async function getPosts(): Promise<SimplePost[]> {
           select: {
             id: true,
             name: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            comments: true,
           },
         },
       },
@@ -49,6 +65,16 @@ export async function getPostsByForum(forumId: string): Promise<SimplePost[]> {
           select: {
             id: true,
             name: true,
+          },
+        },
+        likes: {
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            comments: true,
           },
         },
       },
