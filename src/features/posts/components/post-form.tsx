@@ -3,7 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { createPost } from "@/features/posts/actions/create-post.action";
+import { useSession } from "@/lib/auth/auth-client";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -22,6 +25,8 @@ export function PostForm({
 }: PostFormProps) {
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const { data: session } = useSession();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +34,7 @@ export function PostForm({
 
     startTransition(async () => {
       try {
-        await createPost(content, forumId);
+        await createPost(content, forumId, isAnonymous);
         setContent("");
         toast.success("Post created successfully!");
       } catch {
@@ -48,6 +53,26 @@ export function PostForm({
         required
         disabled={isPending}
       />
+      
+      {!session && (
+        <div className="text-sm text-muted-foreground">
+          Votre message sera publié en anonyme.
+        </div>
+      )}
+      
+      {session && (
+        <div className="flex items-center space-x-2">
+          <Switch
+            id="anonymous-mode"
+            checked={isAnonymous}
+            onCheckedChange={setIsAnonymous}
+          />
+          <Label htmlFor="anonymous-mode" className="text-sm">
+            Publier en anonyme
+          </Label>
+        </div>
+      )}
+      
       <Button type="submit" disabled={isPending || !content.trim()}>
         {isPending ? "Publier..." : "Publier"}
       </Button>

@@ -30,7 +30,7 @@ async function getAnonymousUser() {
   return anonymousUser;
 }
 
-export async function createPost(content: string, forumId?: string) {
+export async function createPost(content: string, forumId?: string, forceAnonymous?: boolean) {
   const headersList = await headers();
 
   const session = await auth.api.getSession({
@@ -45,8 +45,10 @@ export async function createPost(content: string, forumId?: string) {
     throw new Error("Post content cannot be empty");
   }
 
-  // Use authenticated user or anonymous user
-  const userId = session?.user?.id || (await getAnonymousUser()).id;
+  // Use authenticated user or anonymous user based on session and forceAnonymous flag
+  const userId = (session?.user?.id && !forceAnonymous) 
+    ? session.user.id 
+    : (await getAnonymousUser()).id;
 
   await prisma.post.create({
     data: {
