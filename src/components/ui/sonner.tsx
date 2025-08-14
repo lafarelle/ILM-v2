@@ -12,12 +12,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       toastOptions={{
         style: {
-          background: "hsl(var(--card))",
-          color: "hsl(var(--card-foreground))",
-          border: "1px solid hsl(var(--border))",
+          background: theme === "dark" ? "#1f2937" : "#ffffff",
+          color: theme === "dark" ? "#f9fafb" : "#111827",
+          border: `1px solid ${theme === "dark" ? "#374151" : "#e5e7eb"}`,
         },
-        className: "group toast group-[.toaster]:bg-card group-[.toaster]:text-card-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
-        descriptionClassName: "group-[.toast]:text-muted-foreground",
+        className: "group toast group-[.toaster]:shadow-lg",
+        descriptionClassName: "group-[.toast]:opacity-90",
       }}
       {...props}
     />
