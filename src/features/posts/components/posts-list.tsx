@@ -1,9 +1,47 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getPosts } from "@/features/posts/queries/get-posts.action";
-import { PostReport } from "./post-report";
+"use client";
 
-export async function PostsList() {
-  const posts = await getPosts();
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getPosts, type SimplePost } from "@/features/posts/queries/get-posts.action";
+import { PostReport } from "./post-report";
+import { useEffect, useState } from "react";
+
+export function PostsList() {
+  const [posts, setPosts] = useState<SimplePost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const fetchedPosts = await getPosts();
+        setPosts(fetchedPosts);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const handlePostDeleted = (postId: string) => {
+    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Posts</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-muted-foreground py-8">
+            Loading posts...
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -26,7 +64,10 @@ export async function PostsList() {
                   </span>
                 </div>
                 <p className="whitespace-pre-wrap">{post.content}</p>
-                <PostReport postId={post.id} />
+                <PostReport 
+                  postId={post.id} 
+                  onPostDeleted={() => handlePostDeleted(post.id)} 
+                />
               </div>
             ))}
           </div>

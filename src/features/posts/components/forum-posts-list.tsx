@@ -1,14 +1,52 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getPostsByForum } from "@/features/posts/queries/get-posts.action";
+import { getPostsByForum, type SimplePost } from "@/features/posts/queries/get-posts.action";
 import { PostReport } from "./post-report";
+import { useEffect, useState } from "react";
 
 interface ForumPostsListProps {
   forumId: string;
   forumName: string;
 }
 
-export async function ForumPostsList({ forumId, forumName }: ForumPostsListProps) {
-  const posts = await getPostsByForum(forumId);
+export function ForumPostsList({ forumId, forumName }: ForumPostsListProps) {
+  const [posts, setPosts] = useState<SimplePost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const fetchedPosts = await getPostsByForum(forumId);
+        setPosts(fetchedPosts);
+      } catch (error) {
+        console.error("Error fetching forum posts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [forumId]);
+
+  const handlePostDeleted = (postId: string) => {
+    setPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Posts dans {forumName}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center text-muted-foreground py-8">
+            Loading posts...
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -31,7 +69,10 @@ export async function ForumPostsList({ forumId, forumName }: ForumPostsListProps
                   </span>
                 </div>
                 <p className="whitespace-pre-wrap">{post.content}</p>
-                <PostReport postId={post.id} />
+                <PostReport 
+                  postId={post.id} 
+                  onPostDeleted={() => handlePostDeleted(post.id)} 
+                />
               </div>
             ))}
           </div>
