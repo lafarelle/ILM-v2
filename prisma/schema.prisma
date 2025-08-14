@@ -40,7 +40,23 @@ model Post {
   forumId String?
   forum   Forum?  @relation(fields: [forumId], references: [id], onDelete: SetNull)
 
+  reports Report[]
+
   @@map("posts")
+}
+
+model Report {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  reporterId String
+  reporter   User   @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, reporterId])
+  @@map("reports")
 }
 
 model User {
@@ -60,6 +76,7 @@ model User {
   sessions Session[]
   accounts Account[]
   posts    Post[]
+  reports  Report[]
 
   @@map("users")
 }
