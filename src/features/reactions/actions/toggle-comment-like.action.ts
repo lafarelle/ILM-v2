@@ -4,28 +4,28 @@ import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 
-export async function togglePostLike(postId: string) {
+export async function toggleCommentLike(commentId: string) {
   const headersList = await headers();
   const session = await auth.api.getSession({
     headers: headersList,
   });
 
   if (!session?.user?.id) {
-    throw new Error("You must be logged in to like posts");
+    throw new Error("You must be logged in to like comments");
   }
 
-  const existingLike = await prisma.postLike.findUnique({
+  const existingLike = await prisma.commentLike.findUnique({
     where: {
-      userId_postId: {
+      userId_commentId: {
         userId: session.user.id,
-        postId: postId,
+        commentId: commentId,
       },
     },
   });
 
   if (existingLike) {
     // Remove like
-    await prisma.postLike.delete({
+    await prisma.commentLike.delete({
       where: {
         id: existingLike.id,
       },
@@ -33,10 +33,10 @@ export async function togglePostLike(postId: string) {
     return { liked: false };
   } else {
     // Add like
-    await prisma.postLike.create({
+    await prisma.commentLike.create({
       data: {
         userId: session.user.id,
-        postId: postId,
+        commentId: commentId,
       },
     });
     return { liked: true };

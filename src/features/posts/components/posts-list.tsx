@@ -10,7 +10,7 @@ import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 
 export function PostsList() {
-  const { posts, loading, handlePostDeleted, refreshPosts } = usePostsContext();
+  const { posts, loading, handlePostDeleted } = usePostsContext();
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
 
   const toggleComments = (postId: string) => {
@@ -65,7 +65,6 @@ export function PostsList() {
                     <PostLikeButton
                       postId={post.id}
                       likes={post.likes}
-                      onLikeChanged={refreshPosts}
                     />
                     
                     <Button

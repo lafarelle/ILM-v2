@@ -15,9 +15,8 @@ export async function getComments(postId: string) {
           image: true,
         }
       },
-      votes: {
+      likes: {
         select: {
-          isUpvote: true,
           userId: true,
         }
       },
@@ -29,9 +28,8 @@ export async function getComments(postId: string) {
               image: true,
             }
           },
-          votes: {
+          likes: {
             select: {
-              isUpvote: true,
               userId: true,
             }
           },
@@ -61,9 +59,8 @@ export async function getCommentWithReplies(commentId: string) {
           image: true,
         }
       },
-      votes: {
+      likes: {
         select: {
-          isUpvote: true,
           userId: true,
         }
       },
@@ -75,9 +72,8 @@ export async function getCommentWithReplies(commentId: string) {
               image: true,
             }
           },
-          votes: {
+          likes: {
             select: {
-              isUpvote: true,
               userId: true,
             }
           },

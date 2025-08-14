@@ -80,7 +80,7 @@ model User {
   posts        Post[]
   reports      Report[]
   comments     Comment[]
-  commentVotes CommentVote[]
+  commentLikes CommentLike[]
   postLikes    PostLike[]
 
   @@map("users")
@@ -157,17 +157,15 @@ model Comment {
   postId String
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  // Système de votes pour commentaires
-  votes CommentVote[]
+  // Système de likes pour commentaires
+  likes CommentLike[]
 
   @@map("comments")
 }
 
-model CommentVote {
+model CommentLike {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-
-  isUpvote Boolean // true pour upvote, false pour downvote
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -176,7 +174,7 @@ model CommentVote {
   comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, commentId])
-  @@map("comment_votes")
+  @@map("comment_likes")
 }
 
 model PostLike {

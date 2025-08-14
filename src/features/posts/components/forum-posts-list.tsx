@@ -14,7 +14,7 @@ interface ForumPostsListProps {
 }
 
 export function ForumPostsList({ forumName }: ForumPostsListProps) {
-  const { posts, loading, handlePostDeleted, refreshPosts } = useForumPostsContext();
+  const { posts, loading, handlePostDeleted } = useForumPostsContext();
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
 
   const toggleComments = (postId: string) => {
@@ -69,7 +69,6 @@ export function ForumPostsList({ forumName }: ForumPostsListProps) {
                     <PostLikeButton
                       postId={post.id}
                       likes={post.likes}
-                      onLikeChanged={refreshPosts}
                     />
                     
                     <Button

@@ -1,34 +1,34 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { togglePostLike } from "@/features/reactions/actions/toggle-post-like.action";
+import { toggleCommentLike } from "@/features/reactions/actions/toggle-comment-like.action";
 import { useSession } from "@/lib/auth/auth-client";
+import { Heart } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Heart } from "lucide-react";
 
-interface PostLike {
+interface CommentLike {
   userId: string;
 }
 
-interface PostLikeButtonProps {
-  postId: string;
-  likes: PostLike[];
+interface CommentLikeButtonProps {
+  commentId: string;
+  likes: CommentLike[];
   className?: string;
 }
 
-export function PostLikeButton({
-  postId,
+export function CommentLikeButton({
+  commentId,
   likes: initialLikes,
   className = "",
-}: PostLikeButtonProps) {
+}: CommentLikeButtonProps) {
   const [isPending, startTransition] = useTransition();
   const [likes, setLikes] = useState(initialLikes);
   const { data: session } = useSession();
 
   const likesCount = likes.length;
-  const isLiked = session?.user?.id 
-    ? likes.some(like => like.userId === session.user.id)
+  const isLiked = session?.user?.id
+    ? likes.some((like) => like.userId === session.user.id)
     : false;
 
   const handleToggleLike = () => {
@@ -39,19 +39,25 @@ export function PostLikeButton({
 
     // Optimistic update
     if (isLiked) {
-      setLikes(likes.filter(like => like.userId !== session.user.id));
+      setLikes(likes.filter((like) => like.userId !== session.user.id));
     } else {
       setLikes([...likes, { userId: session.user.id }]);
     }
 
     startTransition(async () => {
       try {
-        const result = await togglePostLike(postId);
+        const result = await toggleCommentLike(commentId);
         // If the server response doesn't match our optimistic update, fix it
-        if (result.liked && !likes.some(like => like.userId === session.user.id)) {
+        if (
+          result.liked &&
+          !likes.some((like) => like.userId === session.user.id)
+        ) {
           setLikes([...likes, { userId: session.user.id }]);
-        } else if (!result.liked && likes.some(like => like.userId === session.user.id)) {
-          setLikes(likes.filter(like => like.userId !== session.user.id));
+        } else if (
+          !result.liked &&
+          likes.some((like) => like.userId === session.user.id)
+        ) {
+          setLikes(likes.filter((like) => like.userId !== session.user.id));
         }
       } catch (error) {
         // Revert optimistic update on error
@@ -68,10 +74,10 @@ export function PostLikeButton({
       variant={isLiked ? "default" : "outline"}
       onClick={handleToggleLike}
       disabled={isPending}
-      className={`gap-1 ${className}`}
+      className={`gap-1 h-6 ${className}`}
     >
-      <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-      {likesCount > 0 && <span>{likesCount}</span>}
+      <Heart className={`h-3 w-3 ${isLiked ? "fill-current" : ""}`} />
+      {likesCount > 0 && <span className="text-xs">{likesCount}</span>}
     </Button>
   );
 }

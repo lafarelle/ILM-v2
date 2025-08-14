@@ -7,7 +7,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { MessageCircle, Trash2 } from "lucide-react";
 import { CommentForm } from "./comment-form";
-import { VoteButtons } from "./vote-buttons";
+import { CommentLikeButton } from "./comment-like-button";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -16,8 +16,7 @@ interface CommentUser {
   image: string | null;
 }
 
-interface CommentVote {
-  isUpvote: boolean;
+interface CommentLike {
   userId: string;
 }
 
@@ -29,7 +28,7 @@ interface CommentData {
   authorName: string | null;
   userId: string | null;
   user: CommentUser | null;
-  votes: CommentVote[];
+  likes: CommentLike[];
   replies?: CommentData[];
   postId: string;
 }
@@ -115,10 +114,9 @@ export function Comment({
         <p className="text-sm leading-relaxed">{comment.content}</p>
         
         <div className="flex items-center gap-2">
-          <VoteButtons
+          <CommentLikeButton
             commentId={comment.id}
-            votes={comment.votes}
-            onVoteChanged={onCommentUpdated}
+            likes={comment.likes}
           />
           
           <Button

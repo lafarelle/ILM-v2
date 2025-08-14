@@ -11,8 +11,7 @@ interface CommentUser {
   image: string | null;
 }
 
-interface CommentVote {
-  isUpvote: boolean;
+interface CommentLike {
   userId: string;
 }
 
@@ -24,7 +23,7 @@ interface CommentData {
   authorName: string | null;
   userId: string | null;
   user: CommentUser | null;
-  votes: CommentVote[];
+  likes: CommentLike[];
   replies?: CommentData[];
   postId: string;
 }

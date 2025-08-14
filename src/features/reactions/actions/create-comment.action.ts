@@ -44,7 +44,11 @@ export async function createComment(
           image: true,
         }
       },
-      votes: true,
+      likes: {
+        select: {
+          userId: true,
+        }
+      },
       replies: {
         include: {
           user: {
@@ -53,7 +57,11 @@ export async function createComment(
               image: true,
             }
           },
-          votes: true,
+          likes: {
+        select: {
+          userId: true,
+        }
+      },
         }
       }
     }
