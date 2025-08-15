@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 export type SimplePost = {
   id: string;
   content: string;
+  imageUrl: string | null;
   createdAt: Date;
   isAnonymous: boolean;
   authorName: string | null;
@@ -29,6 +30,7 @@ export async function getPosts(): Promise<SimplePost[]> {
       select: {
         id: true,
         content: true,
+        imageUrl: true,
         createdAt: true,
         isAnonymous: true,
         authorName: true,
@@ -70,6 +72,7 @@ export async function getPostsByForum(forumId: string): Promise<SimplePost[]> {
       select: {
         id: true,
         content: true,
+        imageUrl: true,
         createdAt: true,
         isAnonymous: true,
         authorName: true,

@@ -8,6 +8,7 @@ import { PostLikeButton } from "@/features/reactions/components/post-like-button
 import { CommentsList } from "@/features/reactions/components/comments-list";
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 interface ForumPostsListProps {
   forumName: string;
@@ -66,6 +67,20 @@ export function ForumPostsList({ forumName }: ForumPostsListProps) {
                     </span>
                   </div>
                   <p className="whitespace-pre-wrap mb-3">{post.content}</p>
+                  
+                  {/* Display image if available */}
+                  {post.imageUrl && (
+                    <div className="mb-3">
+                      <Image
+                        src={post.imageUrl}
+                        alt="Post image"
+                        width={800}
+                        height={400}
+                        className="max-w-full h-auto rounded-lg border"
+                        style={{ maxHeight: "400px" }}
+                      />
+                    </div>
+                  )}
                   
                   <div className="flex items-center gap-2">
                     <PostLikeButton

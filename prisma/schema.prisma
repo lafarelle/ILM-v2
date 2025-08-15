@@ -33,6 +33,7 @@ model Post {
   updatedAt DateTime @updatedAt
 
   content String
+  imageUrl String? // URL de l'image uploadée
 
   // Auteur (peut être anonyme)
   isAnonymous Boolean @default(false)

@@ -13,6 +13,8 @@ import { toast } from "sonner";
 import { PostsContext } from "@/features/posts/context/posts-context";
 import { ForumPostsContext } from "@/features/posts/context/forum-posts-context";
 import { useContext } from "react";
+import { useFileUpload } from "@/hooks/use-file-upload";
+import { ImageIcon, X } from "lucide-react";
 
 interface PostFormProps {
   showCard?: boolean;
@@ -38,6 +40,14 @@ export function PostForm({
   // Use forum context if available (forum page), otherwise use general posts context
   const refreshPosts = forumPostsContext?.refreshPosts || postsContext?.refreshPosts;
 
+  // File upload hook for images
+  const [fileUploadState, fileUploadActions] = useFileUpload({
+    maxFiles: 1,
+    maxSize: 5 * 1024 * 1024, // 5MB
+    accept: "image/*",
+    multiple: false,
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
@@ -47,9 +57,15 @@ export function PostForm({
 
     startTransition(async () => {
       try {
-        await createPost(content, forumId, shouldBeAnonymous, authorName);
+        // Get the uploaded file if any
+        const imageFile = fileUploadState.files.length > 0 && fileUploadState.files[0].file instanceof File 
+          ? fileUploadState.files[0].file 
+          : undefined;
+
+        await createPost(content, forumId, shouldBeAnonymous, authorName, imageFile);
         setContent("");
         setAuthorName("");
+        fileUploadActions.clearFiles();
         refreshPosts?.();
         toast.success("Post created successfully!");
       } catch {
@@ -68,6 +84,61 @@ export function PostForm({
         required
         disabled={isPending}
       />
+      
+      {/* Image Upload Section */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={fileUploadActions.openFileDialog}
+            disabled={isPending}
+            className="flex items-center gap-2"
+          >
+            <ImageIcon className="w-4 h-4" />
+            Ajouter une image
+          </Button>
+          {fileUploadState.files.length > 0 && (
+            <span className="text-sm text-muted-foreground">
+              {fileUploadState.files[0].file.name}
+            </span>
+          )}
+        </div>
+        
+        {/* Hidden file input */}
+        <input {...fileUploadActions.getInputProps()} className="hidden" />
+        
+        {/* Image preview */}
+        {fileUploadState.files.length > 0 && fileUploadState.files[0].preview && (
+          <div className="relative inline-block">
+            <img
+              src={fileUploadState.files[0].preview}
+              alt="Preview"
+              className="max-w-xs max-h-48 rounded-lg border"
+            />
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0"
+              onClick={() => fileUploadActions.removeFile(fileUploadState.files[0].id)}
+              disabled={isPending}
+            >
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
+        )}
+        
+        {/* Upload errors */}
+        {fileUploadState.errors.length > 0 && (
+          <div className="text-sm text-red-500">
+            {fileUploadState.errors.map((error, index) => (
+              <p key={index}>{error}</p>
+            ))}
+          </div>
+        )}
+      </div>
       
       {!session && (
         <div className="space-y-2">
