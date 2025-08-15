@@ -12,7 +12,8 @@ export async function createPost(
   forumId?: string, 
   isAnonymous?: boolean,
   authorName?: string,
-  imageFile?: File
+  imageFile?: File,
+  mentions?: string[]
 ) {
   const headersList = await headers();
 
@@ -54,7 +55,7 @@ export async function createPost(
     imageUrl = uploadResult.url || null;
   }
 
-  await prisma.post.create({
+  const post = await prisma.post.create({
     data: {
       content: content.trim(),
       imageUrl,
@@ -64,6 +65,34 @@ export async function createPost(
       authorName: isAnonymous ? (authorName || "Anonyme") : null,
     },
   });
+
+  // Process mentions if provided
+  if (mentions && mentions.length > 0) {
+    // Create or update mentions and link them to the post
+    for (const mentionName of mentions) {
+      if (mentionName.trim()) {
+        // Find or create the mention
+        const mention = await prisma.mention.upsert({
+          where: { name: mentionName.trim() },
+          update: { 
+            usageCount: { increment: 1 } 
+          },
+          create: { 
+            name: mentionName.trim(),
+            usageCount: 1 
+          },
+        });
+
+        // Link the mention to the post
+        await prisma.postMention.create({
+          data: {
+            postId: post.id,
+            mentionId: mention.id,
+          },
+        });
+      }
+    }
+  }
 
   revalidatePath("/");
   if (forumId) {

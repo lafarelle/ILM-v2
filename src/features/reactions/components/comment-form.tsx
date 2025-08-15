@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { MentionInput } from "@/components/mention-input";
 import { createComment } from "@/features/reactions/actions/create-comment.action";
 import { useSession } from "@/lib/auth/auth-client";
 import { useState, useTransition } from "react";
@@ -28,6 +28,7 @@ export function CommentForm({
   className = "",
 }: CommentFormProps) {
   const [content, setContent] = useState("");
+  const [mentions, setMentions] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [authorName, setAuthorName] = useState("");
@@ -42,8 +43,9 @@ export function CommentForm({
 
     startTransition(async () => {
       try {
-        await createComment(postId, content, parentId, effectiveIsAnonymous, authorName);
+        await createComment(postId, content, parentId, effectiveIsAnonymous, authorName, mentions);
         setContent("");
+        setMentions([]);
         setAuthorName("");
         onCommentCreated?.();
         toast.success("Commentaire ajouté !");
@@ -56,13 +58,12 @@ export function CommentForm({
 
   return (
     <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
-      <Textarea
+      <MentionInput
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={setContent}
+        onMentionsChange={setMentions}
         placeholder={placeholder}
         className="min-h-[80px] resize-none"
-        required
-        disabled={isPending}
       />
       
       {!session && (

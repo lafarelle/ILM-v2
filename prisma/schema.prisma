@@ -47,6 +47,7 @@ model Post {
   reports  Report[]
   comments Comment[]
   likes    PostLike[]
+  mentions PostMention[]
 
   @@map("posts")
 }
@@ -162,7 +163,8 @@ model Comment {
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   // Système de likes pour commentaires
-  likes CommentLike[]
+  likes    CommentLike[]
+  mentions CommentMention[]
 
   @@map("comments")
 }
@@ -193,5 +195,45 @@ model PostLike {
 
   @@unique([userId, postId])
   @@map("post_likes")
+}
+
+model Mention {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String   @unique
+  usageCount  Int      @default(1)
+
+  postMentions    PostMention[]
+  commentMentions CommentMention[]
+
+  @@map("mentions")
+}
+
+model PostMention {
+  id String @id @default(uuid())
+
+  postId String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  mentionId String
+  mention   Mention @relation(fields: [mentionId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, mentionId])
+  @@map("post_mentions")
+}
+
+model CommentMention {
+  id String @id @default(uuid())
+
+  commentId String
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  mentionId String
+  mention   Mention @relation(fields: [mentionId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, mentionId])
+  @@map("comment_mentions")
 }
 

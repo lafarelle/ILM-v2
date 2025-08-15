@@ -2,10 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { MentionInput } from "@/components/mention-input";
 import { createPost } from "@/features/posts/actions/create-post.action";
 import { useSession } from "@/lib/auth/auth-client";
 import { useState, useTransition } from "react";
@@ -24,6 +24,7 @@ export function PostForm({
   forumId,
 }: PostFormProps) {
   const [content, setContent] = useState("");
+  const [mentions, setMentions] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [authorName, setAuthorName] = useState("");
@@ -56,8 +57,9 @@ export function PostForm({
           ? fileUploadState.files[0].file 
           : undefined;
 
-        await createPost(content, forumId, shouldBeAnonymous, authorName, imageFile);
+        await createPost(content, forumId, shouldBeAnonymous, authorName, imageFile, mentions);
         setContent("");
+        setMentions([]);
         setAuthorName("");
         fileUploadActions.clearFiles();
         refreshPosts?.();
@@ -70,13 +72,12 @@ export function PostForm({
 
   const formContent = (
     <form onSubmit={handleSubmit} className={`space-y-4 ${className}`}>
-      <Textarea
+      <MentionInput
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={setContent}
+        onMentionsChange={setMentions}
         placeholder={placeholder}
         className="min-h-[100px] resize-none"
-        required
-        disabled={isPending}
       />
       
       {/* Image Upload Section */}

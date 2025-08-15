@@ -10,7 +10,8 @@ export async function createComment(
   content: string, 
   parentId?: string,
   isAnonymous?: boolean,
-  authorName?: string
+  authorName?: string,
+  mentions?: string[]
 ) {
   const headersList = await headers();
   const session = await auth.api.getSession({
@@ -66,6 +67,34 @@ export async function createComment(
       }
     }
   });
+
+  // Process mentions if provided
+  if (mentions && mentions.length > 0) {
+    // Create or update mentions and link them to the comment
+    for (const mentionName of mentions) {
+      if (mentionName.trim()) {
+        // Find or create the mention
+        const mention = await prisma.mention.upsert({
+          where: { name: mentionName.trim() },
+          update: { 
+            usageCount: { increment: 1 } 
+          },
+          create: { 
+            name: mentionName.trim(),
+            usageCount: 1 
+          },
+        });
+
+        // Link the mention to the comment
+        await prisma.commentMention.create({
+          data: {
+            commentId: comment.id,
+            mentionId: mention.id,
+          },
+        });
+      }
+    }
+  }
 
   revalidatePath("/");
   return comment;
