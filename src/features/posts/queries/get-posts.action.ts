@@ -6,10 +6,12 @@ export type SimplePost = {
   id: string;
   content: string;
   createdAt: Date;
+  isAnonymous: boolean;
+  authorName: string | null;
   user: {
     id: string;
     name: string;
-  };
+  } | null;
   likes: {
     userId: string;
   }[];
@@ -24,7 +26,12 @@ export async function getPosts(): Promise<SimplePost[]> {
       orderBy: {
         createdAt: "desc",
       },
-      include: {
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        isAnonymous: true,
+        authorName: true,
         user: {
           select: {
             id: true,
@@ -60,7 +67,12 @@ export async function getPostsByForum(forumId: string): Promise<SimplePost[]> {
       orderBy: {
         createdAt: "desc",
       },
-      include: {
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        isAnonymous: true,
+        authorName: true,
         user: {
           select: {
             id: true,

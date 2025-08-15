@@ -54,7 +54,9 @@ export function PostsList() {
               <div key={post.id} className="space-y-4">
                 <div className="border rounded-lg p-4 relative">
                   <div className="mb-2">
-                    <span className="font-medium">{post.user.name}</span>
+                    <span className="font-medium">
+                      {post.isAnonymous ? (post.authorName || "Anonyme") : post.user?.name}
+                    </span>
                     <span className="text-sm text-muted-foreground ml-2">
                       {new Date(post.createdAt).toLocaleDateString()}
                     </span>
@@ -88,7 +90,7 @@ export function PostsList() {
                 {expandedComments.has(post.id) && (
                   <CommentsList
                     postId={post.id}
-                    postUserId={post.user.id}
+                    postUserId={post.user?.id || null}
                   />
                 )}
               </div>

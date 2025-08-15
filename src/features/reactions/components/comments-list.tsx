@@ -30,7 +30,7 @@ interface CommentData {
 
 interface CommentsListProps {
   postId: string;
-  postUserId: string;
+  postUserId: string | null;
   className?: string;
 }
 

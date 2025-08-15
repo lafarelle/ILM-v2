@@ -29,7 +29,8 @@ export async function createPost(
   // For anonymous posts, we don't need a user ID
   const userId = (!isAnonymous && session?.user?.id) ? session.user.id : undefined;
 
-  if (!isAnonymous && !userId) {
+  // Only require authentication for non-anonymous posts
+  if (!isAnonymous && !session?.user?.id) {
     throw new Error("You must be logged in to post non-anonymous posts");
   }
 

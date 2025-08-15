@@ -35,7 +35,7 @@ interface CommentData {
 
 interface CommentProps {
   comment: CommentData;
-  postUserId: string;
+  postUserId: string | null;
   onCommentUpdated?: () => void;
   className?: string;
   depth?: number;

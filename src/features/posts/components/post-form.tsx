@@ -42,9 +42,12 @@ export function PostForm({
     e.preventDefault();
     if (!content.trim()) return;
 
+    // For non-logged users, force anonymous posting
+    const shouldBeAnonymous = !session || isAnonymous;
+
     startTransition(async () => {
       try {
-        await createPost(content, forumId, isAnonymous, authorName);
+        await createPost(content, forumId, shouldBeAnonymous, authorName);
         setContent("");
         setAuthorName("");
         refreshPosts?.();
