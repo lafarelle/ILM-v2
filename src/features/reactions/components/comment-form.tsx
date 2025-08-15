@@ -33,13 +33,16 @@ export function CommentForm({
   const [authorName, setAuthorName] = useState("");
   const { data: session } = useSession();
 
+  // For non-authenticated users, always treat as anonymous
+  const effectiveIsAnonymous = !session || isAnonymous;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
 
     startTransition(async () => {
       try {
-        await createComment(postId, content, parentId, isAnonymous, authorName);
+        await createComment(postId, content, parentId, effectiveIsAnonymous, authorName);
         setContent("");
         setAuthorName("");
         onCommentCreated?.();
