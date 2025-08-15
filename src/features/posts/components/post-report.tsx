@@ -17,11 +17,7 @@ import { deletePost } from "@/features/posts/actions/delete-post.action"
 import { checkPostOwnership } from "@/features/posts/queries/check-post-ownership.action"
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
-
-interface PostReportProps {
-  postId: string
-  onPostDeleted?: () => void
-}
+import type { PostReportProps } from "@/features/posts/schemas"
 
 export function PostReport({ postId, onPostDeleted }: PostReportProps) {
   const [isReporting, setIsReporting] = useState(false)

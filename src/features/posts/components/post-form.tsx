@@ -15,13 +15,7 @@ import { ForumPostsContext } from "@/features/posts/context/forum-posts-context"
 import { useContext } from "react";
 import { useFileUpload } from "@/hooks/use-file-upload";
 import { ImageIcon, X } from "lucide-react";
-
-interface PostFormProps {
-  showCard?: boolean;
-  placeholder?: string;
-  className?: string;
-  forumId?: string;
-}
+import type { PostFormProps } from "@/features/posts/schemas";
 
 export function PostForm({
   showCard = true,

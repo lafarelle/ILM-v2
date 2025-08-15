@@ -3,6 +3,7 @@
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import type { ReportPostResponse } from "@/features/posts/schemas";
 
 // Get or create an anonymous user for unauthenticated reports
 async function getAnonymousUser() {
@@ -28,7 +29,7 @@ async function getAnonymousUser() {
   return anonymousUser;
 }
 
-export async function reportPost(postId: string) {
+export async function reportPost(postId: string): Promise<ReportPostResponse> {
   const headersList = await headers();
 
   const session = await auth.api.getSession({

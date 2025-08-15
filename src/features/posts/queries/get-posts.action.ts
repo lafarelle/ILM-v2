@@ -1,25 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-
-export type SimplePost = {
-  id: string;
-  content: string;
-  imageUrl: string | null;
-  createdAt: Date;
-  isAnonymous: boolean;
-  authorName: string | null;
-  user: {
-    id: string;
-    name: string;
-  } | null;
-  likes: {
-    userId: string;
-  }[];
-  _count: {
-    comments: number;
-  };
-};
+import type { SimplePost } from "@/features/posts/schemas";
 
 export async function getPosts(): Promise<SimplePost[]> {
   try {

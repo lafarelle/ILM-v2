@@ -3,12 +3,9 @@
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import type { PostOwnershipResponse } from "@/features/posts/schemas";
 
-export async function checkPostOwnership(postId: string): Promise<{
-  isOwner: boolean;
-  isAuthenticated: boolean;
-  userId?: string;
-}> {
+export async function checkPostOwnership(postId: string): Promise<PostOwnershipResponse> {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),

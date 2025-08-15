@@ -3,8 +3,9 @@
 import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
+import type { DeletePostResponse } from "@/features/posts/schemas";
 
-export async function deletePost(postId: string) {
+export async function deletePost(postId: string): Promise<DeletePostResponse> {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
