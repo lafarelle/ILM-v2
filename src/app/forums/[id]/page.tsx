@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star, MessageCircle } from "lucide-react";
 import { PostForm } from "@/features/posts/components/post-form";
-import { ForumPostsList } from "@/features/posts/components/forum-posts-list";
+import { ForumPostsList } from "@/features/posts/components/posts-list";
 import { ForumPostsProvider } from "@/features/posts/context/forum-posts-context";
 
 interface ForumPageProps {

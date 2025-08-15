@@ -4,14 +4,35 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PostReport } from "./post-report";
 import { usePostsContext } from "@/features/posts/context/posts-context";
+import { useForumPostsContext } from "@/features/posts/context/forum-posts-context";
+import type { SimplePost } from "@/features/posts/queries/get-posts.action";
 import { PostLikeButton } from "@/features/reactions/components/post-like-button";
 import { CommentsList } from "@/features/reactions/components/comments-list";
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 
-export function PostsList() {
-  const { posts, loading, handlePostDeleted } = usePostsContext();
+interface PostsListProps {
+  title?: string;
+  forumName?: string;
+  emptyMessage?: string;
+}
+
+function PostsListContent({ 
+  posts, 
+  loading, 
+  handlePostDeleted, 
+  title = "Recent Posts", 
+  forumName, 
+  emptyMessage = "No posts yet. Be the first to create one!" 
+}: {
+  posts: SimplePost[];
+  loading: boolean;
+  handlePostDeleted: (id: string) => void;
+  title?: string;
+  forumName?: string;
+  emptyMessage?: string;
+}) {
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
 
   const toggleComments = (postId: string) => {
@@ -24,11 +45,16 @@ export function PostsList() {
     setExpandedComments(newExpandedComments);
   };
 
+  const displayTitle = forumName ? `Posts dans ${forumName}` : title;
+  const displayEmptyMessage = forumName 
+    ? "Aucun post dans ce forum. Soyez le premier à créer un post !" 
+    : emptyMessage;
+
   if (loading) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Recent Posts</CardTitle>
+          <CardTitle>{displayTitle}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-muted-foreground py-8">
@@ -42,12 +68,12 @@ export function PostsList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recent Posts</CardTitle>
+        <CardTitle>{displayTitle}</CardTitle>
       </CardHeader>
       <CardContent>
         {posts.length === 0 ? (
           <div className="text-center text-muted-foreground py-8">
-            No posts yet. Be the first to create one!
+            {displayEmptyMessage}
           </div>
         ) : (
           <div className="space-y-6">
@@ -114,5 +140,32 @@ export function PostsList() {
         )}
       </CardContent>
     </Card>
+  );
+}
+
+export function PostsList({ title, emptyMessage }: PostsListProps = {}) {
+  const { posts, loading, handlePostDeleted } = usePostsContext();
+  
+  return (
+    <PostsListContent
+      posts={posts}
+      loading={loading}
+      handlePostDeleted={handlePostDeleted}
+      title={title}
+      emptyMessage={emptyMessage}
+    />
+  );
+}
+
+export function ForumPostsList({ forumName }: { forumName: string }) {
+  const { posts, loading, handlePostDeleted } = useForumPostsContext();
+  
+  return (
+    <PostsListContent
+      posts={posts}
+      loading={loading}
+      handlePostDeleted={handlePostDeleted}
+      forumName={forumName}
+    />
   );
 }
