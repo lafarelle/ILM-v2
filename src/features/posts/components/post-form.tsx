@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { createPost } from "@/features/posts/actions/create-post.action";
 import { useSession } from "@/lib/auth/auth-client";
 import { useState, useTransition } from "react";
@@ -29,6 +30,7 @@ export function PostForm({
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [authorName, setAuthorName] = useState("");
   const { data: session } = useSession();
   const postsContext = useContext(PostsContext);
   const forumPostsContext = useContext(ForumPostsContext);
@@ -42,8 +44,9 @@ export function PostForm({
 
     startTransition(async () => {
       try {
-        await createPost(content, forumId, isAnonymous);
+        await createPost(content, forumId, isAnonymous, authorName);
         setContent("");
+        setAuthorName("");
         refreshPosts?.();
         toast.success("Post created successfully!");
       } catch {
@@ -64,21 +67,42 @@ export function PostForm({
       />
       
       {!session && (
-        <div className="text-sm text-muted-foreground">
-          Votre message sera publié en anonyme.
+        <div className="space-y-2">
+          <div className="text-sm text-muted-foreground">
+            Votre message sera publié en anonyme.
+          </div>
+          <Input
+            type="text"
+            placeholder="Nom (optionnel)"
+            value={authorName}
+            onChange={(e) => setAuthorName(e.target.value)}
+            disabled={isPending}
+          />
         </div>
       )}
       
       {session && (
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="anonymous-mode"
-            checked={isAnonymous}
-            onCheckedChange={setIsAnonymous}
-          />
-          <Label htmlFor="anonymous-mode" className="text-sm">
-            Publier en anonyme
-          </Label>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="anonymous-mode"
+              checked={isAnonymous}
+              onCheckedChange={setIsAnonymous}
+            />
+            <Label htmlFor="anonymous-mode" className="text-sm">
+              Publier en anonyme
+            </Label>
+          </div>
+          
+          {isAnonymous && (
+            <Input
+              type="text"
+              placeholder="Nom (optionnel)"
+              value={authorName}
+              onChange={(e) => setAuthorName(e.target.value)}
+              disabled={isPending}
+            />
+          )}
         </div>
       )}
       

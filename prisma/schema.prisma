@@ -34,8 +34,11 @@ model Post {
 
   content String
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Auteur (peut être anonyme)
+  isAnonymous Boolean @default(false)
+  authorName  String? // Nom personnalisé pour les posts anonymes
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   forumId String?
   forum   Forum?  @relation(fields: [forumId], references: [id], onDelete: SetNull)
