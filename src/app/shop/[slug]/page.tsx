@@ -53,9 +53,13 @@ export default async function ShopDetailPage({ params }: PageProps) {
           <div>
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-muted-foreground mb-4">{product.description}</p>
-            <Button asChild>
-              <Link href="/shop">Ajouter au panier (fake)</Link>
-            </Button>
+            <form action="/api/cart/add" method="post" className="flex gap-3">
+              <input type="hidden" name="productId" value={product.id} />
+              <Button type="submit">Ajouter au panier</Button>
+              <Button asChild variant="ghost">
+                <Link href="/cart">Voir le panier</Link>
+              </Button>
+            </form>
           </div>
         </div>
       </main>

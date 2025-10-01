@@ -258,7 +258,7 @@ function VerticalNav({
                   <UserIcon
                     className={`${isCollapsed ? "" : "mr-2"} h-4 w-4`}
                   />
-                  {!isCollapsed && <span>Profil</span>}
+                  {!isCollapsed && <span>Profile</span>}
                 </Link>
               </Button>
               {session.user.role === "ADMIN" && (

@@ -42,7 +42,7 @@ export function TopLeftButtons() {
             size="sm"
             className="backdrop-blur-sm border-border/70 bg-background/80 text-foreground hover:bg-accent hover:text-accent-foreground dark:bg-background/70"
           >
-            <Link href="/profile">Profil</Link>
+            <Link href="/profile">Profile</Link>
           </Button>
           {session.user.role === "ADMIN" && (
             <Button
