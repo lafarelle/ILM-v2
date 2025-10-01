@@ -94,7 +94,12 @@ export default async function Page() {
       <div className="space-y-4">
         <ReturnButton href="/" label="Home" />
 
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+          <a href="/admin/manage-shop" className="text-sm underline">
+            Gérer la boutique
+          </a>
+        </div>
 
         <p className="p-2 rounded-md text-lg bg-green-600 text-white font-bold">
           ACCESS GRANTED

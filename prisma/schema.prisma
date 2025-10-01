@@ -237,3 +237,42 @@ model CommentMention {
   @@map("comment_mentions")
 }
 
+// Shop
+enum ProductCategory {
+  MERCH
+  ARTISAN
+}
+
+model Artisan {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name      String
+  slug      String   @unique
+  bio       String?
+  avatarUrl String?
+
+  products Product[]
+
+  @@map("artisans")
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  slug        String   @unique
+  description String
+  priceCents  Int
+  imageUrl    String?
+  category    ProductCategory
+
+  artisanId String?
+  artisan   Artisan? @relation(fields: [artisanId], references: [id], onDelete: SetNull)
+
+  @@map("products")
+}
+
