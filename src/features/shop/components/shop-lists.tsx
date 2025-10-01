@@ -18,16 +18,9 @@ export function ShopLists({
   return (
     <div className="space-y-10">
       <section>
-        <h2 className="text-xl font-semibold mb-4">Artisans de Meudon</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {artisans.map((artisan) => (
-            <ArtisanCard key={artisan.id} artisan={artisan} />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-semibold mb-4">Merch</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          T-shirt pour honorer Meudon
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {merch.map((product) => (
             <ProductCard key={product.id} product={product} />
@@ -36,14 +29,22 @@ export function ShopLists({
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold mb-4">Produits d'artisans</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="text-xl font-semibold mb-4">Produits d&apos;artisans</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {artisanProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-xl font-semibold mb-4">Artisans de Meudon</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {artisans.map((artisan) => (
+            <ArtisanCard key={artisan.id} artisan={artisan} />
           ))}
         </div>
       </section>
     </div>
   );
 }
-
