@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { uploadFileToS3 } from "@/features/r2-bucket/utils/awss3.utils";
 import { createArtisan } from "@/features/shop/actions/create-artisan.action";
 import { createProduct } from "@/features/shop/actions/create-product.action";
 import { getArtisans } from "@/features/shop/queries/get-artisans.action";
@@ -23,11 +24,28 @@ export default async function ManageShopPage() {
 
   async function submitArtisan(formData: FormData) {
     "use server";
+    let uploadedAvatarUrl: string | undefined;
+    const avatarFile = formData.get("avatarFile") as File | null;
+    if (avatarFile && avatarFile.size > 0) {
+      const headersListInner = await headers();
+      const sessionInner = await auth.api.getSession({
+        headers: headersListInner,
+      });
+      if (!sessionInner) throw new Error("Vous devez être connecté");
+
+      const { url } = await uploadFileToS3({
+        file: avatarFile,
+        prefix: `users/${sessionInner.user.id}`,
+        filename: avatarFile.name,
+      });
+      uploadedAvatarUrl = url;
+    }
+
     await createArtisan({
       name: String(formData.get("name") || ""),
       slug: String(formData.get("slug") || ""),
       bio: (formData.get("bio") as string) || undefined,
-      avatarUrl: (formData.get("avatarUrl") as string) || undefined,
+      avatarUrl: uploadedAvatarUrl,
     });
   }
 
@@ -35,12 +53,30 @@ export default async function ManageShopPage() {
     "use server";
     const category = String(formData.get("category") || "merch");
     const artisanIdRaw = (formData.get("artisanId") as string) || undefined;
+
+    // Optional image upload to R2
+    let uploadedImageUrl: string | undefined;
+    const file = formData.get("imageFile") as File | null;
+    if (file && file.size > 0) {
+      const headersListInner = await headers();
+      const sessionInner = await auth.api.getSession({
+        headers: headersListInner,
+      });
+      if (!sessionInner) throw new Error("Vous devez être connecté");
+
+      const { url } = await uploadFileToS3({
+        file,
+        prefix: `users/${sessionInner.user.id}`,
+        filename: file.name,
+      });
+      uploadedImageUrl = url;
+    }
     await createProduct({
       name: String(formData.get("p_name") || ""),
       slug: String(formData.get("p_slug") || ""),
       description: String(formData.get("description") || ""),
       priceCents: Number(formData.get("priceCents") || 0),
-      imageUrl: (formData.get("imageUrl") as string) || undefined,
+      imageUrl: uploadedImageUrl,
       category: category === "artisan" ? "artisan" : "merch",
       artisanId:
         category === "artisan" ? (artisanIdRaw ?? undefined) : undefined,
@@ -58,7 +94,11 @@ export default async function ManageShopPage() {
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Ajouter un artisan</h2>
-        <form action={submitArtisan} className="grid gap-4 max-w-xl">
+        <form
+          action={submitArtisan}
+          className="grid gap-4 max-w-xl"
+          encType="multipart/form-data"
+        >
           <div className="grid gap-2">
             <Label htmlFor="name">Nom *</Label>
             <Input id="name" name="name" required />
@@ -77,11 +117,16 @@ export default async function ManageShopPage() {
             <Textarea id="bio" name="bio" rows={3} />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="avatarUrl">Avatar URL</Label>
-            <Input id="avatarUrl" name="avatarUrl" type="url" />
+            <Label htmlFor="avatarFile">Avatar</Label>
+            <Input
+              id="avatarFile"
+              name="avatarFile"
+              type="file"
+              accept="image/*"
+            />
           </div>
           <div>
-            <Button type="submit">Créer l'artisan</Button>
+            <Button type="submit">Créer l&apos;artisan</Button>
           </div>
         </form>
 
@@ -109,7 +154,11 @@ export default async function ManageShopPage() {
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold">Ajouter un produit</h2>
-        <form action={submitProduct} className="grid gap-4 max-w-xl">
+        <form
+          action={submitProduct}
+          className="grid gap-4 max-w-xl"
+          encType="multipart/form-data"
+        >
           <div className="grid gap-2">
             <Label htmlFor="p_name">Nom *</Label>
             <Input id="p_name" name="p_name" required />
@@ -138,8 +187,13 @@ export default async function ManageShopPage() {
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="imageUrl">Image URL</Label>
-            <Input id="imageUrl" name="imageUrl" type="url" />
+            <Label htmlFor="imageFile">Image</Label>
+            <Input
+              id="imageFile"
+              name="imageFile"
+              type="file"
+              accept="image/*"
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="category">Catégorie *</Label>
