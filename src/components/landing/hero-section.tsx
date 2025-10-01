@@ -3,8 +3,10 @@
 import { Button } from "@/components/ui/button";
 import { PostForm } from "@/features/posts/components/post-form";
 import { useSession } from "@/lib/auth/auth-client";
+import Image from "next/image";
 import Link from "next/link";
 import { ForumsPreview } from "./forums-preview";
+import { TopLeftButtons } from "./top-left-buttons";
 
 interface Forum {
   id: string;
@@ -36,91 +38,30 @@ export function HeroSection({ forums }: HeroSectionProps) {
         />
       </div>
 
-      <div className="absolute top-4 left-4 z-10">
-        {!session ? (
-          <div className="flex items-center gap-2">
-            <Button
-              asChild
-              variant="outline"
-              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
-            >
-              <Link href="/auth/login">Se connecter</Link>
-            </Button>
-            <Button
-              asChild
-              variant="default"
-              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
-            >
-              <Link href="/shop">Voir le magasin</Link>
-            </Button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <Button
-              asChild
-              variant="default"
-              size="sm"
-              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
-            >
-              <Link href="/shop">Voir le magasin</Link>
-            </Button>
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
-            >
-              <Link href="/profile">Profile</Link>
-            </Button>
-            {session.user.role === "ADMIN" && (
-              <Button
-                asChild
-                variant="default"
-                size="sm"
-                className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
-              >
-                <Link href="/admin/dashboard">Admin Dashboard</Link>
-              </Button>
-            )}
-          </div>
-        )}
-      </div>
+      <TopLeftButtons />
 
       <div className="relative container mx-auto max-w-7xl px-4 py-24 sm:py-32 lg:py-40">
         <div className="text-center">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 dark:bg-primary/20 rounded-full mb-8">
-              <svg
-                className="w-8 h-8 text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-            </div>
+          <div className="mb-6 flex items-center justify-center gap-3">
+            <Image
+              src="/images/logo-meudon.png"
+              alt="Logo Meudon"
+              width={56}
+              height={56}
+              className="rounded-md shadow-sm"
+              priority
+            />
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance">
+              prenez part dans les débats les plus importants de votre ville
+            </h1>
           </div>
 
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl lg:text-7xl">
-            <span className="block text-primary">Pour tous les</span>
-            <span className="block mt-2 text-secondary">
-              adorateurs de Meudon
-            </span>
-          </h1>
+          <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
+            Rejoignez les discussions sur la vie locale, la forêt, la culture et
+            l’avenir de Meudon.
+          </p>
 
-          <div className="mt-12 max-w-2xl mx-auto">
+          <div className="mt-8 max-w-3xl mx-auto">
             {!session && (
               <p className="text-sm text-muted-foreground mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
                 Votre post sera publié de façon anonyme.
@@ -135,6 +76,12 @@ export function HeroSection({ forums }: HeroSectionProps) {
               placeholder="Partagez votre amour pour Meudon..."
               className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50"
             />
+          </div>
+
+          <div className="mt-8">
+            <Button asChild variant="secondary" className="px-6">
+              <Link href="/forums">Voir les sujets</Link>
+            </Button>
           </div>
 
           <ForumsPreview forums={forums} />
