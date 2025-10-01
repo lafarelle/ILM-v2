@@ -1,9 +1,14 @@
 import { ShopLists } from "@/features/shop/components/shop-lists";
-import { artisans, products } from "@/features/shop/mock/shop.data";
+import { getArtisans } from "@/features/shop/queries/get-artisans.action";
+import { getProducts } from "@/features/shop/queries/get-products.action";
 
-export default function ShopPage() {
-  const merch = products.filter((p) => p.category === "merch");
-  const artisanProducts = products.filter((p) => p.category === "artisan");
+export default async function ShopPage() {
+  const [artisans, products] = await Promise.all([
+    getArtisans(),
+    getProducts(),
+  ]);
+  const merch = products.filter((p) => p.category === "MERCH");
+  const artisanProducts = products.filter((p) => p.category === "ARTISAN");
 
   return (
     <main className="container mx-auto max-w-6xl px-4 py-10">

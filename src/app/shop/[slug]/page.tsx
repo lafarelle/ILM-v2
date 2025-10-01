@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import {
+  getAllShopSlugs,
   getArtisanBySlug,
   getProductBySlug,
-  products,
-} from "@/features/shop/mock/shop.data";
+} from "@/features/shop/queries/get-by-slug.action";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,14 +11,17 @@ interface PageProps {
   params: { slug: string };
 }
 
-export function generateStaticParams() {
-  return products.map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  const slugs = await getAllShopSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-export default function ShopDetailPage({ params }: PageProps) {
+export default async function ShopDetailPage({ params }: PageProps) {
   const { slug } = params;
-  const product = getProductBySlug(slug);
-  const artisan = getArtisanBySlug(slug);
+  const [product, artisan] = await Promise.all([
+    getProductBySlug(slug),
+    getArtisanBySlug(slug),
+  ]);
 
   if (!product && !artisan) {
     return (
