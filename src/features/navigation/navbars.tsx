@@ -262,19 +262,34 @@ function VerticalNav({
                 </Link>
               </Button>
               {session.user.role === "ADMIN" && (
-                <Button
-                  asChild
-                  variant="ghost"
-                  className={`w-full ${isCollapsed ? "justify-center" : "justify-start"}`}
-                  onClick={onNavigate}
-                >
-                  <Link href="/admin/dashboard">
-                    <LayoutDashboard
-                      className={`${isCollapsed ? "" : "mr-2"} h-4 w-4`}
-                    />
-                    {!isCollapsed && <span>Admin</span>}
-                  </Link>
-                </Button>
+                <>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={`w-full ${isCollapsed ? "justify-center" : "justify-start"}`}
+                    onClick={onNavigate}
+                  >
+                    <Link href="/admin/dashboard">
+                      <LayoutDashboard
+                        className={`${isCollapsed ? "" : "mr-2"} h-4 w-4`}
+                      />
+                      {!isCollapsed && <span>Admin</span>}
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className={`w-full ${isCollapsed ? "justify-center" : "justify-start"}`}
+                    onClick={onNavigate}
+                  >
+                    <Link href="/admin/forums">
+                      <MessageSquare
+                        className={`${isCollapsed ? "" : "mr-2"} h-4 w-4`}
+                      />
+                      {!isCollapsed && <span>Forums (Admin)</span>}
+                    </Link>
+                  </Button>
+                </>
               )}
             </div>
           )}

@@ -4,9 +4,6 @@ import {
 } from "@/components/auth-management/delete-user-button";
 import { ReturnButton } from "@/components/buttons/return-button";
 import { UserRoleSelect } from "@/components/user-role/user-role-select";
-import { CreateForumForm } from "@/features/forums/components/create-forum-form";
-import { ForumsList } from "@/features/forums/components/forums-list";
-import { getForums } from "@/features/forums/queries/get-forums.action";
 import type { UserRole } from "@/generated/prisma";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
@@ -87,18 +84,21 @@ export default async function Page() {
     return 0;
   });
 
-  const forums = await getForums();
-
   return (
     <div className="px-8 py-16 container mx-auto max-w-screen-lg space-y-8">
       <div className="space-y-4">
         <ReturnButton href="/" label="Home" />
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <a href="/admin/manage-shop" className="text-sm underline">
-            Gérer la boutique
-          </a>
+          <div className="flex items-center gap-3 text-sm">
+            <a href="/admin/forums" className="underline">
+              Gérer les forums
+            </a>
+            <a href="/admin/manage-shop" className="underline">
+              Gérer la boutique
+            </a>
+          </div>
         </div>
 
         <p className="p-2 rounded-md text-lg bg-green-600 text-white font-bold">
@@ -107,15 +107,6 @@ export default async function Page() {
       </div>
 
       <div className="space-y-8">
-        {/* Forums Management Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold">Gestion des Forums</h2>
-            <CreateForumForm />
-          </div>
-          <ForumsList forums={forums} />
-        </div>
-
         {/* Users Management Section */}
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold">Gestion des Utilisateurs</h2>
