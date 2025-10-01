@@ -1,6 +1,12 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ForumsLinksList } from "@/features/forums/components/forums-links-list";
 import { getForums } from "@/features/forums/queries/get-forums.action";
-import { ForumsList } from "@/features/forums/components/forums-list";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function ForumsPage() {
   const forums = await getForums();
@@ -11,11 +17,16 @@ export default async function ForumsPage() {
         <CardHeader>
           <CardTitle>Forums</CardTitle>
           <CardDescription>
-            Découvrez tous les forums disponibles et participez aux discussions
+            Parcourez les forums de la communauté. Sélectionnez un forum pour
+            voir et publier des messages.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <ForumsList forums={forums} />
+          <p className="text-sm text-muted-foreground mb-4">
+            Liste simple des forums ci-dessous. Le nombre de messages est
+            indiqué entre parenthèses.
+          </p>
+          <ForumsLinksList forums={forums} />
         </CardContent>
       </Card>
     </div>
@@ -24,5 +35,6 @@ export default async function ForumsPage() {
 
 export const metadata = {
   title: "Forums - Liste des forums",
-  description: "Découvrez tous les forums disponibles et participez aux discussions communautaires",
+  description:
+    "Découvrez tous les forums disponibles et participez aux discussions communautaires",
 };
