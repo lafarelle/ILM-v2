@@ -1,14 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { ProductCard } from "@/features/shop/components/product-card";
 import {
   getAllShopSlugs,
   getArtisanBySlug,
   getProductBySlug,
 } from "@/features/shop/queries/get-by-slug.action";
+import { getProductsByArtisanId } from "@/features/shop/queries/get-products-by-artisan.action";
+import type { Product } from "@/features/shop/types";
 import Image from "next/image";
 import Link from "next/link";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -17,7 +20,7 @@ export async function generateStaticParams() {
 }
 
 export default async function ShopDetailPage({ params }: PageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const [product, artisan] = await Promise.all([
     getProductBySlug(slug),
     getArtisanBySlug(slug),
@@ -59,6 +62,21 @@ export default async function ShopDetailPage({ params }: PageProps) {
     );
   }
 
+  const artisanProducts = artisan
+    ? await getProductsByArtisanId(artisan.id)
+    : [];
+
+  const normalizedArtisanProducts: Product[] = artisanProducts.map((p) => ({
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    description: p.description,
+    priceCents: p.priceCents,
+    imageUrl: p.imageUrl,
+    category: (p.category as string).toLowerCase() as "merch" | "artisan",
+    artisanId: p.artisanId,
+  }));
+
   return (
     <main className="container mx-auto max-w-3xl px-4 py-10">
       <div className="flex gap-6">
@@ -79,6 +97,21 @@ export default async function ShopDetailPage({ params }: PageProps) {
           </Button>
         </div>
       </div>
+
+      <section className="mt-10">
+        <h2 className="text-xl font-semibold mb-4">
+          Produits de {artisan?.name}
+        </h2>
+        {normalizedArtisanProducts.length === 0 ? (
+          <p className="text-muted-foreground">Aucun produit pour le moment.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {normalizedArtisanProducts.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+      </section>
     </main>
   );
 }
