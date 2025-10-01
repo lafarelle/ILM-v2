@@ -20,7 +20,7 @@ export default async function Page() {
 
   if (session.user.role !== "ADMIN") {
     return (
-      <div className="px-8 py-16 container mx-auto max-w-screen-lg space-y-8">
+      <div className="px-10 py-16 container max-w-screen-lg space-y-8">
         <div className="space-y-4">
           <ReturnButton href="/" label="Home" />
 

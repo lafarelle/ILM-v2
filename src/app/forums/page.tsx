@@ -12,7 +12,7 @@ export default async function ForumsPage() {
   const forums = await getForums();
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="container px-10 py-8">
       <Card>
         <CardHeader>
           <CardTitle>Forums</CardTitle>
@@ -22,10 +22,6 @@ export default async function ForumsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Liste simple des forums ci-dessous. Le nombre de messages est
-            indiqué entre parenthèses.
-          </p>
           <ForumsLinksList forums={forums} />
         </CardContent>
       </Card>

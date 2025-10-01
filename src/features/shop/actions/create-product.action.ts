@@ -33,8 +33,10 @@ export async function createProduct(input: CreateProductInput) {
     if (!artisan) throw new Error("Artisan introuvable");
   }
 
-  const category: ProductCategory =
-    data.category === "merch" ? "MERCH" : "ARTISAN";
+  let category: ProductCategory;
+  if (data.category === "merch") category = "MERCH";
+  else if (data.category === "artisan") category = "ARTISAN";
+  else category = "DROPSHIPPING";
 
   const product = await prisma.product.create({
     data: {

@@ -23,7 +23,7 @@ export function ProductForm({ artisans }: ProductFormProps) {
       <CardHeader>
         <CardTitle>Ajouter un produit</CardTitle>
         <CardDescription>
-          Créez un produit merch ou lié à un artisan.
+          Créez un produit merch, dropshipping, ou lié à un artisan.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -76,6 +76,7 @@ export function ProductForm({ artisans }: ProductFormProps) {
               className="border rounded h-9 px-3"
             >
               <option value="merch">Merch</option>
+              <option value="dropshipping">Dropshipping</option>
               <option value="artisan">Artisan</option>
             </select>
           </div>

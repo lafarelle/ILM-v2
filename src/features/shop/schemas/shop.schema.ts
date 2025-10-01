@@ -22,7 +22,7 @@ export const createProductSchema = z
     description: z.string().min(1).max(1000),
     priceCents: z.number().int().min(0),
     imageUrl: z.string().url().optional(),
-    category: z.enum(["merch", "artisan"]),
+    category: z.enum(["merch", "artisan", "dropshipping"]),
     artisanId: z.string().uuid().optional().nullable(),
   })
   .refine(

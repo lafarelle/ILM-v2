@@ -1,11 +1,16 @@
-import { notFound } from "next/navigation";
-import { getForumById } from "@/features/forums/queries/get-forums.action";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, MessageCircle } from "lucide-react";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { getForumById } from "@/features/forums/queries/get-forums.action";
 import { PostForm } from "@/features/posts/components/post-form";
 import { ForumPostsList } from "@/features/posts/components/posts-list";
 import { ForumPostsProvider } from "@/features/posts/context/forum-posts-context";
+import { MessageCircle, Star } from "lucide-react";
+import { notFound } from "next/navigation";
 
 interface ForumPageProps {
   params: {
@@ -19,7 +24,7 @@ export default async function ForumPage({ params }: ForumPageProps) {
     const forum = await getForumById(id);
 
     return (
-      <div className="container mx-auto py-8">
+      <div className="container px-10 py-8">
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -34,13 +39,17 @@ export default async function ForumPage({ params }: ForumPageProps) {
                   )}
                 </div>
                 <CardDescription>
-                  {forum.description || "Aucune description disponible pour ce forum"}
+                  {forum.description ||
+                    "Aucune description disponible pour ce forum"}
                 </CardDescription>
               </div>
               <div className="text-right">
                 <div className="flex items-center text-sm text-muted-foreground gap-1">
                   <MessageCircle className="h-4 w-4" />
-                  <span>{forum._count.posts} post{forum._count.posts !== 1 ? "s" : ""}</span>
+                  <span>
+                    {forum._count.posts} post
+                    {forum._count.posts !== 1 ? "s" : ""}
+                  </span>
                 </div>
               </div>
             </div>
@@ -49,14 +58,12 @@ export default async function ForumPage({ params }: ForumPageProps) {
 
         <ForumPostsProvider forumId={forum.id}>
           <div className="mt-8 space-y-8">
-            <PostForm 
+            <PostForm
               forumId={forum.id}
               placeholder={`Que voulez-vous partager dans ${forum.name} ?`}
             />
-            
-            <ForumPostsList 
-              forumName={forum.name}
-            />
+
+            <ForumPostsList forumName={forum.name} />
           </div>
         </ForumPostsProvider>
       </div>
@@ -70,10 +77,11 @@ export async function generateMetadata({ params }: ForumPageProps) {
   try {
     const { id } = await params;
     const forum = await getForumById(id);
-    
+
     return {
       title: `${forum.name} - Forum`,
-      description: forum.description || `Discussions et posts du forum ${forum.name}`,
+      description:
+        forum.description || `Discussions et posts du forum ${forum.name}`,
     };
   } catch {
     return {

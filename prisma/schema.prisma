@@ -241,6 +241,7 @@ model CommentMention {
 enum ProductCategory {
   MERCH
   ARTISAN
+  DROPSHIPPING
 }
 
 model Artisan {

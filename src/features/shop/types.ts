@@ -13,7 +13,6 @@ export interface Product {
   description: string;
   priceCents: number;
   imageUrl?: string | null;
-  category: "merch" | "artisan";
+  category: "merch" | "artisan" | "dropshipping";
   artisanId?: string | null;
 }
-

@@ -32,7 +32,12 @@ export async function submitProduct(formData: FormData) {
     description: String(formData.get("description") || ""),
     priceCents: Number(formData.get("priceCents") || 0),
     imageUrl: uploadedImageUrl,
-    category: category === "artisan" ? "artisan" : "merch",
+    category:
+      category === "artisan"
+        ? "artisan"
+        : category === "dropshipping"
+          ? "dropshipping"
+          : "merch",
     artisanId: category === "artisan" ? (artisanIdRaw ?? undefined) : undefined,
   });
 }
