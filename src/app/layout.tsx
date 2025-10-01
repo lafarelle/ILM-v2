@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import { Montserrat, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeSwitch } from "@/components/ui/theme-switch-button";
+import Navbar from "@/features/navigation/navbars";
+import type { Metadata } from "next";
+import { Geist_Mono, Montserrat } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import "./globals.css";
 
 const montserrat = Montserrat({
   variable: "--font-sans",
@@ -34,7 +35,14 @@ export default function RootLayout({
           <div className="fixed top-4 right-4 z-50">
             <ThemeSwitch />
           </div>
-          {children}
+          <Navbar />
+          <main
+            style={{ paddingLeft: "var(--sidebar-width, 240px)" }}
+            className="hidden lg:block"
+          >
+            {children}
+          </main>
+          <main className="lg:hidden">{children}</main>
           <Toaster position="top-center" richColors />
         </NuqsAdapter>
       </body>

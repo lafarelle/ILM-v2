@@ -3,10 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { PostForm } from "@/features/posts/components/post-form";
 import { useSession } from "@/lib/auth/auth-client";
-import Image from "next/image";
 import Link from "next/link";
 import { ForumsPreview } from "./forums-preview";
-import { TopLeftButtons } from "./top-left-buttons";
 
 interface Forum {
   id: string;
@@ -38,21 +36,13 @@ export function HeroSection({ forums }: HeroSectionProps) {
         />
       </div>
 
-      <TopLeftButtons />
+      {/* TopLeftButtons replaced by global Navbar in layout */}
 
       <div className="relative container mx-auto max-w-7xl px-4 py-24 sm:py-32 lg:py-40">
         <div className="text-center">
           <div className="mb-6 flex items-center justify-center gap-3">
-            <Image
-              src="/images/logo-meudon.png"
-              alt="Logo Meudon"
-              width={56}
-              height={56}
-              className="rounded-md shadow-sm"
-              priority
-            />
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance">
-              prenez part dans les débats les plus importants de votre ville
+              Prenez part dans les débats les plus importants de votre ville
             </h1>
           </div>
 

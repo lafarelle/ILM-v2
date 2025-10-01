@@ -259,3 +259,14 @@
 body {
   letter-spacing: var(--tracking-normal);
 }
+
+/* Sidebar width variable with sensible defaults */
+:root {
+  --sidebar-width: 240px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --sidebar-width: 0px; /* no left padding on mobile */
+  }
+}
