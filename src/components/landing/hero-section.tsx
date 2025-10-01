@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { PostForm } from "@/features/posts/components/post-form";
 import { useSession } from "@/lib/auth/auth-client";
-import { ForumsPreview } from "./forums-preview";
 import Link from "next/link";
+import { ForumsPreview } from "./forums-preview";
 
 interface Forum {
   id: string;
@@ -22,7 +22,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ forums }: HeroSectionProps) {
   const { data: session } = useSession();
-  
+
   return (
     <section className="relative overflow-hidden bg-background dark:bg-background">
       <div className="absolute inset-0 opacity-40">
@@ -38,15 +38,32 @@ export function HeroSection({ forums }: HeroSectionProps) {
 
       <div className="absolute top-4 left-4 z-10">
         {!session ? (
-          <Button
-            asChild
-            variant="outline"
-            className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
-          >
-            <Link href="/auth/login">Se connecter</Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              asChild
+              variant="outline"
+              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+            >
+              <Link href="/auth/login">Se connecter</Link>
+            </Button>
+            <Button
+              asChild
+              variant="default"
+              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+            >
+              <Link href="/shop">Voir le magasin</Link>
+            </Button>
+          </div>
         ) : (
           <div className="flex items-center gap-2">
+            <Button
+              asChild
+              variant="default"
+              size="sm"
+              className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm"
+            >
+              <Link href="/shop">Voir le magasin</Link>
+            </Button>
             <Button
               asChild
               variant="outline"
@@ -102,14 +119,15 @@ export function HeroSection({ forums }: HeroSectionProps) {
               adorateurs de Meudon
             </span>
           </h1>
-          
+
           <div className="mt-12 max-w-2xl mx-auto">
             {!session && (
               <p className="text-sm text-muted-foreground mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
-                Votre post sera publié de façon anonyme. 
+                Votre post sera publié de façon anonyme.
                 <Link href="/auth/login" className="ml-1 underline font-medium">
                   Connectez-vous
-                </Link> pour publier avec votre profil.
+                </Link>{" "}
+                pour publier avec votre profil.
               </p>
             )}
             <PostForm
@@ -118,7 +136,7 @@ export function HeroSection({ forums }: HeroSectionProps) {
               className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50"
             />
           </div>
-          
+
           <ForumsPreview forums={forums} />
         </div>
       </div>
