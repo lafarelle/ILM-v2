@@ -42,13 +42,12 @@ export function HeroSection({ forums }: HeroSectionProps) {
         <div className="text-center">
           <div className="mb-6 flex items-center justify-center gap-3">
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance">
-              Prenez part dans les débats les plus importants de votre ville
+              Prenez part dans les débats de Meudon
             </h1>
           </div>
 
           <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-3xl mx-auto">
-            Rejoignez les discussions sur la vie locale, la forêt, la culture et
-            l’avenir de Meudon.
+            Rejoignez les discussions !
           </p>
 
           <div className="mt-8 max-w-3xl mx-auto">
