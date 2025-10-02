@@ -1,22 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCart } from "@/features/shop/actions/cart.actions";
 import {
   getLatestPaidOrder,
   getOrderByStripeSessionId,
-} from "@/features/shop/actions/order.actions";
+} from "@/features/orders/queries/orders.queries";
+
+import { clearCart, getCart } from "@/features/shop/actions/cart.actions";
 import { stripe } from "@/features/stripe/utils/stripe";
+import { formatPrice } from "@/utils/format";
 import Image from "next/image";
 import Link from "next/link";
 import type Stripe from "stripe";
-
-function formatPrice(priceCents: number): string {
-  const euros = priceCents / 100;
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-  }).format(euros);
-}
 
 interface SearchParams {
   [key: string]: string | string[] | undefined;
@@ -70,6 +64,13 @@ export default async function CartPage({
           }
         }
       }
+    }
+
+    // Fallback: ensure the cart is cleared after successful payment in case webhook didn't run
+    try {
+      await clearCart();
+    } catch {
+      // ignore
     }
 
     return (
@@ -180,7 +181,48 @@ export default async function CartPage({
                     className="rounded-md object-cover"
                   />
                 ) : null}
-                <div className="ml-auto">
+                <div className="ml-auto flex items-center gap-2">
+                  <form action="/api/cart/update" method="post">
+                    <input
+                      type="hidden"
+                      name="productId"
+                      value={item.productId}
+                    />
+                    <input
+                      type="hidden"
+                      name="quantity"
+                      value={Math.max(0, item.quantity - 1)}
+                    />
+                    <Button
+                      type="submit"
+                      variant="outline"
+                      aria-label="Diminuer la quantité"
+                    >
+                      -
+                    </Button>
+                  </form>
+                  <span className="min-w-[2ch] text-center" aria-live="polite">
+                    {item.quantity}
+                  </span>
+                  <form action="/api/cart/update" method="post">
+                    <input
+                      type="hidden"
+                      name="productId"
+                      value={item.productId}
+                    />
+                    <input
+                      type="hidden"
+                      name="quantity"
+                      value={item.quantity + 1}
+                    />
+                    <Button
+                      type="submit"
+                      variant="outline"
+                      aria-label="Augmenter la quantité"
+                    >
+                      +
+                    </Button>
+                  </form>
                   <form action="/api/cart/remove" method="post">
                     <input
                       type="hidden"

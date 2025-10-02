@@ -1,17 +1,10 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { formatPrice } from "@/utils/format";
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "../types";
-
-function formatPrice(priceCents: number): string {
-  const euros = priceCents / 100;
-  return new Intl.NumberFormat("fr-FR", {
-    style: "currency",
-    currency: "EUR",
-  }).format(euros);
-}
 
 interface ProductCardProps {
   product: Product;
@@ -47,4 +40,3 @@ export function ProductCard({ product }: ProductCardProps) {
     </Link>
   );
 }
-
