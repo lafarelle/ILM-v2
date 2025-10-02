@@ -35,12 +35,11 @@ export async function getOrderById(orderId: string) {
 }
 
 export async function getOrderByStripeSessionId(sessionId: string) {
-  const userId = await requireUserId();
+  // Allow both guest and logged-in success views by not requiring auth here
   const order = await prisma.order.findUnique({
     where: { stripeCheckoutSessionId: sessionId },
     include: { items: { include: { product: true } } },
   });
-  if (!order || order.userId !== userId) return null;
   return order;
 }
 

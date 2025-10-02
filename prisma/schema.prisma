@@ -340,6 +340,12 @@ model Order {
   stripeCheckoutSessionId String? @unique
   stripePaymentIntentId   String?
 
+  // Contact/shipping info (applies to guest and logged-in orders)
+  contactFirstName String?
+  contactLastName  String?
+  contactPhone     String?
+  contactLocation  String?
+
   items OrderItem[]
 
   @@map("orders")

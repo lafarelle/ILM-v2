@@ -47,7 +47,7 @@ export async function addToCart(productId: string, quantity: number = 1) {
   }
 
   // Guest cart: store in cookie
-  const jar = cookies();
+  const jar = await cookies();
   const raw = jar.get("guest_cart")?.value;
   let items: { productId: string; quantity: number }[] = [];
   if (raw) {

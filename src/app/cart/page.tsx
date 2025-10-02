@@ -245,19 +245,147 @@ export default async function CartPage({
             </CardContent>
           </Card>
 
-          <div className="flex gap-3">
-            <form action="/api/cart/clear" method="post">
-              <Button variant="outline" type="submit">
-                Vider le panier
-              </Button>
-            </form>
-            <form
-              action="/api/stripe/checkout"
-              method="post"
-              className="ml-auto"
-            >
-              <Button type="submit">Payer avec Stripe</Button>
-            </form>
+          <div className="flex flex-col gap-6">
+            <div className="flex gap-3">
+              <form action="/api/cart/clear" method="post">
+                <Button variant="outline" type="submit">
+                  Vider le panier
+                </Button>
+              </form>
+            </div>
+
+            {cart.userId ? null : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">
+                    Payer en tant qu&apos;invité
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form
+                    action="/api/stripe/guest-checkout"
+                    method="post"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    <div>
+                      <label htmlFor="firstName" className="block text-sm mb-1">
+                        Prénom
+                      </label>
+                      <input
+                        id="firstName"
+                        name="firstName"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="lastName" className="block text-sm mb-1">
+                        Nom
+                      </label>
+                      <input
+                        id="lastName"
+                        name="lastName"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="phone" className="block text-sm mb-1">
+                        Téléphone
+                      </label>
+                      <input
+                        id="phone"
+                        name="phone"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="location" className="block text-sm mb-1">
+                        Adresse / Localisation
+                      </label>
+                      <input
+                        id="location"
+                        name="location"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div className="md:col-span-2 flex justify-end">
+                      <Button type="submit">Payer avec Stripe (invité)</Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
+            {cart.userId ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">Payer (connecté)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form
+                    action="/api/stripe/checkout"
+                    method="post"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  >
+                    <div>
+                      <label
+                        htmlFor="firstName2"
+                        className="block text-sm mb-1"
+                      >
+                        Prénom
+                      </label>
+                      <input
+                        id="firstName2"
+                        name="firstName"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="lastName2" className="block text-sm mb-1">
+                        Nom
+                      </label>
+                      <input
+                        id="lastName2"
+                        name="lastName"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="phone2" className="block text-sm mb-1">
+                        Téléphone
+                      </label>
+                      <input
+                        id="phone2"
+                        name="phone"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <label htmlFor="location2" className="block text-sm mb-1">
+                        Adresse / Localisation
+                      </label>
+                      <input
+                        id="location2"
+                        name="location"
+                        required
+                        className="w-full rounded-md border px-3 py-2"
+                      />
+                    </div>
+                    <div className="md:col-span-2 flex justify-end">
+                      <Button type="submit">
+                        Payer avec Stripe (connecté)
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            ) : null}
           </div>
         </div>
       )}

@@ -27,10 +27,13 @@ export async function POST(req: Request) {
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    const userId = (session?.metadata?.userId ||
-      session?.client_reference_id) as string | undefined;
+    const userId = (session?.metadata?.userId || undefined) as
+      | string
+      | undefined;
     const paymentIntentId = session?.payment_intent as string | undefined;
     const sessionId = session?.id as string | undefined;
+    const orderIdFromMetadata = (session?.metadata?.orderId ||
+      session?.client_reference_id) as string | undefined;
 
     if (userId && sessionId) {
       // Build order from user's current cart to reflect purchased items
@@ -78,6 +81,22 @@ export async function POST(req: Request) {
       // Clear the cart after successful order creation
       if (cart) {
         await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+      }
+    }
+
+    // Finalize pre-created order by orderId metadata (works for both flows)
+    if (orderIdFromMetadata && sessionId) {
+      try {
+        await prisma.order.update({
+          where: { id: orderIdFromMetadata },
+          data: {
+            status: "PAID",
+            stripeCheckoutSessionId: sessionId,
+            stripePaymentIntentId: paymentIntentId ?? null,
+          },
+        });
+      } catch (e) {
+        console.error("Failed to update order from metadata.orderId", e);
       }
     }
   }

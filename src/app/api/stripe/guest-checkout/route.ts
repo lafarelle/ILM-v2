@@ -1,20 +1,13 @@
 import { CheckoutContactSchema } from "@/features/orders/schemas/order.schemas";
+import { getCart } from "@/features/shop/actions/cart.actions";
 import { stripe } from "@/features/stripe/utils/stripe";
-import { auth } from "@/lib/auth/auth";
 import { prisma } from "@/lib/prisma";
-import { headers } from "next/headers";
+import { isSameOrigin } from "@/lib/security";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const headersList = await headers();
-  const session = await auth.api.getSession({ headers: headersList });
-  if (!session?.user?.id) {
-    return NextResponse.redirect(new URL("/auth/login", req.url));
-  }
-
-  const userId = session.user.id;
-
-  // For logged-in users, require contact info like guests (form or JSON)
+  if (!isSameOrigin(req))
+    return new NextResponse("Invalid origin", { status: 403 });
   const contentType = req.headers.get("content-type") || "";
   let input: {
     firstName: string;
@@ -39,19 +32,17 @@ export async function POST(req: Request) {
       location: String(formData.get("location") || "").trim(),
     };
   }
+
   const parsed = CheckoutContactSchema.safeParse(input);
   if (!parsed.success) {
     return NextResponse.redirect(
-      new URL("/cart?error=invalid_contact_form", req.url)
+      new URL("/cart?error=invalid_guest_form", req.url)
     );
   }
 
-  const cart = await prisma.cart.findUnique({
-    where: { userId },
-    include: { items: { include: { product: true } } },
-  });
-
-  if (!cart || cart.items.length === 0) {
+  // Read cart from cookie (guest) or DB (if logged accidentally)
+  const cart = await getCart();
+  if (!cart.items.length) {
     return NextResponse.redirect(new URL("/cart", req.url));
   }
 
@@ -74,10 +65,9 @@ export async function POST(req: Request) {
     0
   );
 
-  // Pre-create a pending order with contact details; link later via session id
+  // Pre-create a pending order with contact details; link via stripe session id later
   const order = await prisma.order.create({
     data: {
-      user: { connect: { id: userId } },
       totalCents,
       status: "REQUIRES_PAYMENT",
       contactFirstName: parsed.data.firstName,
@@ -101,7 +91,10 @@ export async function POST(req: Request) {
     success_url: `${new URL(req.url).origin}/cart?success=1&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${new URL(req.url).origin}/cart?canceled=1`,
     client_reference_id: order.id,
-    metadata: { orderId: order.id, userId },
+    metadata: {
+      orderId: order.id,
+      guest: "1",
+    },
   });
 
   return NextResponse.redirect(sessionStripe.url || new URL("/cart", req.url), {
